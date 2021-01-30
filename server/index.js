@@ -12,8 +12,10 @@ app.use(cors());
 app.use(express.json());
 
 //Routes//
+
+//Admin//
 // Create Problem
-app.post("/api/admin/problem", async (req, res) => {
+app.post("/api/admin/problems", async (req, res) => {
   try {
     const {
       title,
@@ -36,11 +38,65 @@ app.post("/api/admin/problem", async (req, res) => {
   }
 });
 
+// Update Problem
+app.put("/api/admin/problems/:id", async (reg, res) => {
+  try {
+    const { id } = req.params;
+    const {
+      title,
+      description,
+      type,
+      difficulty,
+      image_url,
+      answer,
+    } = req.body;
+    const updateProblem = await pool.query(
+      "UPDATE problems SET title = $2, description = $3, type = $4, difficulty = $5, Image_url = $6, answer = $7 \
+      WHERE problem_id = $1",
+      [id, title, description, type, difficulty, image_url, answer]
+    );
+  } catch (error) {
+    console.error(error);
+  }
+});
+// Delete Problem
+
+//General//
 // Get All Problems
 app.get("/api/problems", async (req, res) => {
   try {
     const allProblems = await pool.query("SELECT * FROM problems");
     res.json(allProblems.rows);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+// Get Problem by ID
+app.get("/api/problems/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const problem = await pool.query(
+      "SELECT * FROM problems WHERE problem_id = $1",
+      [id]
+    );
+
+    res.json(problem.rows);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
+// Get Active Problem
+app.get("/api/problems/active", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const problem = await pool.query(
+      "SELECT * FROM problems WHERE problem_id = $1",
+      [id]
+    );
+
+    res.json(problem.rows);
   } catch (error) {
     console.error(error);
   }
