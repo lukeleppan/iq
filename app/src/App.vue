@@ -1,38 +1,25 @@
 <template>
   <div id="app">
     <div id="nav">
-      <div class="nav-left">
-        <div class="mlc-cred">
-          Presented by<br /><strong>2021 Tutoring MLC</strong>
-        </div>
-        <div class="dev-cred">
-          Developed by<br /><strong>Luke Leppan</strong>
-        </div>
-      </div>
+      <div class="nav-left"></div>
       <div class="nav-centre">
-        <button id="home-btn">
-          <img id="home-icon" src="../src/assets/home.svg" alt="Home Icon" />
+        <button id="home-btn" v-on:click="SwitchToHome">
+          <img
+            id="home-icon"
+            src="../src/assets/lightbulb.svg"
+            alt="Home Icon"
+          />
         </button>
-        <button id="lb-btn">
+        <button id="lb-btn" v-on:click="SwitchToLeaderboard">
           <img
             id="lb-icon"
             src="../src/assets/leaderboard.svg"
             alt="Leader Board Icon"
           />
+          <div v-if="activeLeaderboard">Leaderboard</div>
         </button>
       </div>
-      <div class="nav-right">
-        <a
-          href="https://github.com/lukeleppan/untitled-logic-game"
-          class="github-link"
-        >
-          <img
-            src="../src/assets/GitHub-Mark-120px-plus.png"
-            alt="Github Logo"
-            id="github"
-          />
-        </a>
-      </div>
+      <div class="nav-right"></div>
     </div>
     <router-view />
   </div>
@@ -64,7 +51,7 @@
 }
 
 .nav-centre {
-  box-shadow: 0.1rem 0.1rem 0.5rem rgb(63, 63, 63);
+  box-shadow: 0rem 0.2rem 0.5rem rgb(63, 63, 63);
   padding: 1rem;
   border-radius: 3rem;
 }
@@ -80,9 +67,25 @@
 }
 
 #home-icon {
-  margin-right: 1rem;
-  width: 40px;
-  height: 40px;
+  margin-right: 0.5rem;
+  width: 25px;
+  height: 25px;
+}
+
+#lb-btn {
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+#lb-btn:focus {
+  outline: none;
+}
+
+#lb-icon {
+  margin-left: 0.5rem;
+  width: 20px;
+  height: 20px;
 }
 
 #github {
@@ -90,3 +93,21 @@
   height: 50px;
 }
 </style>
+
+<script>
+export default {
+  name: "App",
+  data() {
+    activeLeaderboard: false;
+  },
+  methods: {
+    SwitchToLeaderboard() {
+      this.activeLeaderboard = true;
+    },
+
+    SwitchToHome() {
+      this.activeLeaderboard = false;
+    }
+  }
+};
+</script>
