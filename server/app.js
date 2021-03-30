@@ -1,18 +1,16 @@
 require("dotenv").config();
-const { Client } = require("pg");
-const client = new Client();
+const cors = require("cors");
 const express = require("express");
 const app = express();
-const cors = require("cors");
-const pool = require("./db");
+const pool = require("./config/database");
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 
-app.use(cors(origin("localhost")));
+app.use(cors({ origin: "localhost" }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-//Routes//
-
+//----ROUTES----//
 //Admin//
 // Create Problem
 app.post("/api/admin/problems", async (req, res) => {
@@ -101,6 +99,8 @@ app.get("/api/problems/active", async (req, res) => {
     console.error(error);
   }
 });
+
+//---------------//
 
 app.listen(5000, () => {
   console.log("Listening on port 5000: http://localhost:5000");
