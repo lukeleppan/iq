@@ -8,7 +8,7 @@ const pool = require("./db");
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
 
-app.use(cors());
+app.use(cors(origin("localhost")));
 app.use(express.json());
 
 //Routes//
@@ -39,7 +39,7 @@ app.post("/api/admin/problems", async (req, res) => {
 });
 
 // Update Problem
-app.put("/api/admin/problems/:id", async (reg, res) => {
+app.put("/api/admin/problems/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const {

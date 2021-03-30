@@ -10,9 +10,7 @@ CREATE TABLE problems (
   answer TEXT NOT NULL,
   active BOOLEAN,
   active_date TIMESTAMP,
-  solved BOOLEAN NOT NULL,
-  solved_date TIMESTAMP,
-  solved_by TEXT
+  solved BOOLEAN NOT NULL
 );
 
 CREATE TABLE attempts (
