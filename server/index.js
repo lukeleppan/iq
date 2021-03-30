@@ -28,7 +28,7 @@ app.post("/api/admin/problems", async (req, res) => {
     const newProblem = await pool.query(
       "INSERT INTO problems \
       (title, description, type, difficulty, image_url, \
-        answer, active, solved) VALUES($1, $2, $3, $4, $5, $6, false, false) RETURNING *",
+        answer, active) VALUES($1, $2, $3, $4, $5, $6, false) RETURNING *",
       [title, description, type, difficulty, image_url, answer]
     );
 

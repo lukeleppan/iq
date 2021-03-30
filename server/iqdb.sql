@@ -1,5 +1,3 @@
-CREATE DATABASE lgdb;
-
 CREATE TABLE problems (
   problem_id SERIAL PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
@@ -12,6 +10,11 @@ CREATE TABLE problems (
   active_date TIMESTAMP,
   solved BOOLEAN NOT NULL
 );
+
+CREATE TABLE users (
+  user_id SERIAL PRIMARY KEY,
+  
+)
 
 CREATE TABLE attempts (
   attempt_id SERIAL PRIMARY KEY,
