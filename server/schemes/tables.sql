@@ -35,8 +35,7 @@ CREATE TABLE "attempts" (
 );
 
 CREATE TABLE "admins" (
-  admin_id SERIAL PRIMARY KEY,
-  admin_username TEXT,
+  admin_username TEXT PRIMARY KEY,
   hash TEXT,
   salt TEXT
 );

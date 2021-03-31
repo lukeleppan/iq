@@ -3,6 +3,7 @@ const db = require("../database");
 const utils = require("../lib/utils");
 
 //---- USERS ----//
+// Registration
 router.post("/register", async (req, res, next) => {
   const saltHash = utils.genPassword(req.body.password);
 
@@ -38,6 +39,54 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
+//Authentication
+router.post("/login", async (req, res, next) => {
+  const getUser = await db.query("SELECT * FROM users WHERE username = $1", [
+    req.body.username,
+  ]);
+
+  if (getUser.error) {
+    console.error("{server error}: during user auth");
+    res
+      .status(500)
+      .json({ success: false, user_error: false, msg: "sever error" });
+    return next(getUser.error);
+  }
+
+  if (getUser.rowCount === 0) {
+    console.log("{Auth Failed}: User Does Not Exist");
+    return res.status(401).json({
+      success: false,
+      user_error: true,
+      msg: "username or password incorrect",
+    });
+  }
+
+  const salt = getUser.rows[0].salt;
+  const hash = getUser.rows[0].hash;
+
+  const isValid = utils.validPassword(req.body.password, hash, salt);
+
+  if (isValid) {
+    const user = {
+      username: getUser.rows[0].username,
+      displayname: getUser.rows[0].displayname,
+      house: getUser.rows[0].displayname,
+    };
+
+    const token = utils.issueJWT(user);
+
+    res
+      .status(200)
+      .json({ success: true, token: token.token, expiresIn: token.expires });
+  } else {
+    res.status(401).json({
+      success: false,
+      user_error: true,
+      msg: "username or password incorrect",
+    });
+  }
+});
 //---------------//
 
 module.exports = router;
