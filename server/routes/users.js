@@ -16,11 +16,11 @@ router.post("/register", function (req, res, next) {
   ]).rows[0];
 
   if (!userExists) {
-    const newUser = [displayname, house, username, hash, salt];
+    const newUser = [username, hash, salt, displayname, house];
 
     try {
       db.query(
-        "INSERT INTO users (displayname, house, username, hash, salt) \
+        "INSERT INTO users (username, hash, salt, displayname, house) \
         VAlUES($1, $2, $3, $4, $5)",
         newUser
       );
