@@ -54,6 +54,11 @@ function issueJWT(user) {
     expiresIn: expiresIn,
     algorithm: "RS256",
   });
+
+  return {
+    token: "Bearer " + signedToken,
+    expires: expiresIn,
+  };
 }
 
 module.exports.validPassword = validPassword;
