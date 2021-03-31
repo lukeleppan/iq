@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const pool = require("./config/database");
+const db = require("../database");
 
 //---- General ----//
 // Get All Problems

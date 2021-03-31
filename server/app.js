@@ -6,7 +6,6 @@ const server = require("http").Server(app);
 const path = require("path");
 const passport = require("passport");
 
-const pool = require("./config/database");
 require("./config/passport")(passport);
 
 app.use(passport.initialize());
