@@ -2,104 +2,22 @@ require("dotenv").config();
 const cors = require("cors");
 const express = require("express");
 const app = express();
-const pool = require("./config/database");
 const server = require("http").Server(app);
-const io = require("socket.io")(server);
+const path = require("path");
+const passport = require("passport");
 
-app.use(cors({ origin: "localhost" }));
+const pool = require("./config/database");
+require("./config/passport")(passport);
+
+app.use(passport.initialize());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(cors());
+
 //----ROUTES----//
-//Admin//
-// Create Problem
-app.post("/api/admin/problems", async (req, res) => {
-  try {
-    const {
-      title,
-      description,
-      type,
-      difficulty,
-      image_url,
-      answer,
-    } = req.body;
-    const newProblem = await pool.query(
-      "INSERT INTO problems \
-      (title, description, type, difficulty, image_url, \
-        answer, active) VALUES($1, $2, $3, $4, $5, $6, false) RETURNING *",
-      [title, description, type, difficulty, image_url, answer]
-    );
-
-    res.json(newProblem.rows[0]);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-// Update Problem
-app.put("/api/admin/problems/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const {
-      title,
-      description,
-      type,
-      difficulty,
-      image_url,
-      answer,
-    } = req.body;
-    const updateProblem = await pool.query(
-      "UPDATE problems SET title = $2, description = $3, type = $4, difficulty = $5, Image_url = $6, answer = $7 \
-      WHERE problem_id = $1",
-      [id, title, description, type, difficulty, image_url, answer]
-    );
-  } catch (error) {
-    console.error(error);
-  }
-});
-// Delete Problem
-
-//General//
-// Get All Problems
-app.get("/api/problems", async (req, res) => {
-  try {
-    const allProblems = await pool.query("SELECT * FROM problems");
-    res.json(allProblems.rows);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-// Get Problem by ID
-app.get("/api/problems/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const problem = await pool.query(
-      "SELECT * FROM problems WHERE problem_id = $1",
-      [id]
-    );
-
-    res.json(problem.rows);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
-// Get Active Problem
-app.get("/api/problems/active", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const problem = await pool.query(
-      "SELECT * FROM problems WHERE problem_id = $1",
-      [id]
-    );
-
-    res.json(problem.rows);
-  } catch (error) {
-    console.error(error);
-  }
-});
-
+app.use(require("./routes"));
 //---------------//
 
 app.listen(5000, () => {
