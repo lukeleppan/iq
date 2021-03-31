@@ -12,13 +12,9 @@ const PRIV_KEY = fs.readFileSync(pathToKey, "utf-8");
  * @param {*} salt - salt stored in db
  */
 function validPassword(password, hash, salt) {
-  var hashVerify = Crypto.pbkdf2Sync(
-    password,
-    salt,
-    10000,
-    64,
-    "sha512"
-  ).toString("hex");
+  var hashVerify = crypto
+    .pbkdf2Sync(password, salt, 10000, 64, "sha512")
+    .toString("hex");
   return hash === hashVerify;
 }
 
@@ -41,7 +37,7 @@ function genPassword(password) {
  * @param {*} user - user object
  */
 function issueJWT(user) {
-  const _id = user._id;
+  const username = user.username;
 
   const expiresIn = "7d";
 
