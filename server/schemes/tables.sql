@@ -2,7 +2,7 @@ CREATE TABLE "houses" (
   house_id SERIAL PRIMARY KEY,
   house_name TEXT NOT NULL,
   colour TEXT
-)
+);
 
 CREATE TABLE "users" (
   username VARCHAR(20) PRIMARY KEY NOT NULL,
@@ -10,7 +10,7 @@ CREATE TABLE "users" (
   salt TEXT NOT NULL,
   displayname TEXT NOT NULL,
   house BIGINT REFERENCES houses(house_id)
-)
+);
 
 CREATE TABLE "problems" (
   problem_id SERIAL PRIMARY KEY,
@@ -32,4 +32,11 @@ CREATE TABLE "attempts" (
   username VARCHAR(20) REFERENCES users(username),
   attempt_date TIMESTAMP NOT NULL,
   success BOOLEAN NOT NULL
+);
+
+CREATE TABLE "admins" (
+  admin_id SERIAL PRIMARY KEY,
+  admin_username TEXT,
+  hash TEXT,
+  salt TEXT
 );
