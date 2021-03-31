@@ -3,6 +3,7 @@ const db = require("../database");
 const User = require("../models/user");
 const utils = require("../lib/utils");
 
+//---- USERS ----//
 router.post("/register", function (req, res, next) {
   const saltHash = utils.genPassword(req.body.password);
 
@@ -35,3 +36,5 @@ router.post("/register", function (req, res, next) {
     res.status(406).json({ userExists: true, success: false });
   }
 });
+
+//---------------//
