@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const db = require("../database");
-const utils = require("../lib/utils");
 
 //---- Admin ----//
 
