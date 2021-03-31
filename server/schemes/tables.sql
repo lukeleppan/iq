@@ -9,7 +9,9 @@ CREATE TABLE "users" (
   hash TEXT NOT NULL,
   salt TEXT NOT NULL,
   displayname TEXT NOT NULL,
-  house BIGINT REFERENCES houses(house_id)
+  house BIGINT REFERENCES houses(house_id),
+  verified BOOLEAN NOT NULL,
+  admin BOOLEAN NOT NULL
 );
 
 CREATE TABLE "problems" (
@@ -32,10 +34,4 @@ CREATE TABLE "attempts" (
   username VARCHAR(20) REFERENCES users(username),
   attempt_date TIMESTAMP NOT NULL,
   success BOOLEAN NOT NULL
-);
-
-CREATE TABLE "admins" (
-  admin_username TEXT PRIMARY KEY,
-  hash TEXT,
-  salt TEXT
 );
