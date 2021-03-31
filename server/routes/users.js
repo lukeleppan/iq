@@ -1,6 +1,5 @@
 const router = require("express").Router();
 const db = require("../database");
-const User = require("../models/user");
 const utils = require("../lib/utils");
 
 //---- USERS ----//
