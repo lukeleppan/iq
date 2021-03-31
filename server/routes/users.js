@@ -3,6 +3,7 @@ const db = require("../database");
 const User = require("../models/user");
 const utils = require("../lib/utils");
 
+//---- USERS ----//
 router.post("/register", function (req, res, next) {
   const saltHash = utils.genPassword(req.body.password);
 
@@ -16,11 +17,11 @@ router.post("/register", function (req, res, next) {
   ]).rows[0];
 
   if (!userExists) {
-    const newUser = [displayname, house, username, hash, salt];
+    const newUser = [username, hash, salt, displayname, house];
 
     try {
       db.query(
-        "INSERT INTO users (displayname, house, username, hash, salt) \
+        "INSERT INTO users (username, hash, salt, displayname, house) \
         VAlUES($1, $2, $3, $4, $5)",
         newUser
       );
@@ -35,3 +36,5 @@ router.post("/register", function (req, res, next) {
     res.status(406).json({ userExists: true, success: false });
   }
 });
+
+//---------------//
