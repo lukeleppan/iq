@@ -4,27 +4,24 @@ const db = require("../database");
 //---- Admin ----//
 
 // Create Problem
-router.post("/problems", (req, res) => {
-  try {
-    const {
-      title,
-      description,
-      type,
-      difficulty,
-      image_url,
-      answer,
-    } = req.body;
-    const newProblem = db.query(
-      "INSERT INTO problems \
-      (title, description, type, difficulty, image_url, \
-        answer, active) VALUES($1, $2, $3, $4, $5, $6, false) RETURNING *",
-      [title, description, type, difficulty, image_url, answer]
-    );
+router.post("/problems", async (req, res) => {
+  const {
+    title,
+    description,
+    type,
+    difficulty,
+    image_url,
+    author,
+    answer,
+  } = req.body;
 
-    res.json(newProblem.rows[0]);
-  } catch (error) {
-    console.error(error);
-  }
+  const {
+    rows,
+  } = await db.query(
+    "INSERT INTO problems (title, description, type, difficulty, image_url, answer, author, active, solved) VALUES($1, $2, $3, $4, $5, $6, $7, false, false) RETURNING *",
+    [title, description, type, difficulty, image_url, author, answer]
+  );
+  res.status(201).json({ success: true, record: rows[0] });
 });
 
 // Update Problem

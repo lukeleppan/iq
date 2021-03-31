@@ -3,7 +3,9 @@ const pool = require("../config/database");
 module.exports = {
   async query(text, params) {
     const start = Date.now();
-    const res = await pool.query(text, params);
+    const res = await pool.query(text, params).catch((err) => {
+      return { error: err };
+    });
     const duration = Date.now() - start;
     console.log("{Query Execution}: ", { text, duration, rows: res.rowCount });
     return res;
