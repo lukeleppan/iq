@@ -7,7 +7,11 @@ module.exports = {
       return { error: err };
     });
     const duration = Date.now() - start;
-    console.log("{Query Execution}: ", { text, duration, rows: res.rowCount });
+    console.log("{Query Execution}:", {
+      type: res.command,
+      duration,
+      rows: res.rowCount,
+    });
     return res;
   },
 

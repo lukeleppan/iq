@@ -38,11 +38,17 @@ function genPassword(password) {
  */
 function issueJWT(user) {
   const username = user.username;
+  const displayname = user.displayname;
+  const admin = user.admin;
+  const house = user.house;
 
   const expiresIn = "7d";
 
   const payload = {
-    sub: _id,
+    sub: username,
+    name: displayname,
+    admin: admin,
+    house: house,
     iat: Date.now(),
   };
 

@@ -3,10 +3,10 @@ const db = require("../database");
 
 //---- General ----//
 // Get All Problems
-router.get("/problems", (req, res) => {
+router.get("/problems", async (req, res) => {
   try {
-    const allProblems = db.query("SELECT * FROM problems");
-    res.json(allProblems.rows);
+    const allProblems = await db.query("SELECT * FROM problems");
+    res.status(200).json({ problems: allProblems.rows });
   } catch (error) {
     console.error(error);
   }

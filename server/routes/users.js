@@ -16,18 +16,22 @@ router.post("/register", async (req, res, next) => {
     "SELECT COUNT(1) FROM users WHERE username = $1",
     [username]
   );
+
   if (checkUser.error) {
     res.status(500).json({ userExists: null, success: false });
     next(checkUser.error);
   } else if (checkUser.rows[0].count == 0) {
-    const newUser = [username, hash, salt, displayname, house];
+    const countUsers = await db.query("SELECT COUNT(1) FROM users", []);
+    const numUsers = countUsers.rows[0].count;
+
+    const newUser = [username, hash, salt, displayname, house, numUsers == 0];
     const insertUser = await db.query(
-      "INSERT INTO users (username, hash, salt, displayname, house) \
-        VAlUES($1, $2, $3, $4, $5) RETURNING *",
+      "INSERT INTO users (username, hash, salt, displayname, house, verified, admin) \
+        VAlUES($1, $2, $3, $4, $5, false, $6) RETURNING *",
       newUser
     );
     if (insertUser.error) {
-      console.error("{Registration Failed}: ", err);
+      console.error("{Registration Failed}: ", insertUser.error);
       res.status(500).json({ userExists: false, success: false });
     } else {
       console.log("{Registration Success}: New User Added - ", newUser[0]);
@@ -49,7 +53,7 @@ router.post("/login", async (req, res, next) => {
     console.error("{server error}: during user auth");
     res
       .status(500)
-      .json({ success: false, user_error: false, msg: "sever error" });
+      .json({ success: false, user_error: false, msg: "server error" });
     return next(getUser.error);
   }
 
@@ -71,6 +75,7 @@ router.post("/login", async (req, res, next) => {
     const user = {
       username: getUser.rows[0].username,
       displayname: getUser.rows[0].displayname,
+      admin: getUser.rows[0].admin,
       house: getUser.rows[0].displayname,
     };
 
