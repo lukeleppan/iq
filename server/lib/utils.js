@@ -1,10 +1,61 @@
+require("dotenv").config();
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
 
 const pathToKey = path.join(__dirname, "..", "id_rsa_priv.pem");
 const PRIV_KEY = fs.readFileSync(pathToKey, "utf-8");
+const {
+  URL,
+  GMAIL_USER,
+  GMAIL_PASS,
+  OAUTH_CLIENTID,
+  OAUTH_CLIENT_SECRET,
+  OAUTH_REFRESH_TOKEN,
+} = process.env;
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    type: "OAuth2",
+    user: GMAIL_USER,
+    pass: GMAIL_PASS,
+    clientId: OAUTH_CLIENTID,
+    clientSecret: OAUTH_CLIENT_SECRET,
+    refreshToken: OAUTH_REFRESH_TOKEN,
+  },
+});
+
+/**
+ * @param {*} token - verify token
+ * @param {*} username - username
+ */
+function sendVerifyEmail(token, username) {
+  const verifyLink = URL + "/api/users/confirm/" + token;
+  const cancelLink = URL + "/api/users/cancel/" + token;
+  return transporter.sendMail(
+    {
+      from: "tmctutors@gmail.com",
+      to: `${username}@thomasmore.co.za`,
+      subject: "Verify Email - iKhwezi Quiz",
+      html: `<h3>Verify Email - iKhwezi Quiz</h3>\
+        <p>If you didn't register please click on the cancel link.</p>\
+        <p>Click to verify: <a href="${verifyLink}">Verify</a></p>\
+        <p>Click to cancel: <a href="${cancelLink}">Cancel</a></p>`,
+    },
+    (err, info) => {
+      if (err) {
+        console.error("{Email Error}:", err);
+        return { err, info };
+      } else {
+        console.log("{Email Accepted}:", info.accepted);
+        return { err, info };
+      }
+    }
+  );
+}
 
 /**
  * @param {*} password - plain text password
@@ -63,6 +114,32 @@ function issueJWT(user) {
   };
 }
 
+/**
+ * @param {*} user - user object
+ */
+function issueVerifyJWT(user) {
+  const username = user.username;
+
+  const expiresIn = "1d";
+  const payload = {
+    sub: username,
+    forVer: true,
+    iat: Date.now(),
+  };
+
+  const signedToken = jwt.sign(payload, PRIV_KEY, {
+    expiresIn: expiresIn,
+    algorithm: "RS256",
+  });
+
+  return {
+    token: signedToken,
+    expires: expiresIn,
+  };
+}
+
 module.exports.validPassword = validPassword;
 module.exports.genPassword = genPassword;
 module.exports.issueJWT = issueJWT;
+module.exports.issueVerifyJWT = issueVerifyJWT;
+module.exports.sendVerifyEmail = sendVerifyEmail;

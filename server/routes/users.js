@@ -1,8 +1,15 @@
+require("dotenv").config();
 const router = require("express").Router();
+const jwt = require("jsonwebtoken");
 const db = require("../database");
 const utils = require("../lib/utils");
+const fs = require("fs");
+const path = require("path");
 
-//---- USERS ----//
+const pathToKey = path.join(__dirname, "..", "id_rsa_priv.pem");
+const PRIV_KEY = fs.readFileSync(pathToKey, "utf-8");
+
+//---- USERS MANAGER ----//
 // Registration
 router.post("/register", async (req, res, next) => {
   const saltHash = utils.genPassword(req.body.password);
@@ -35,7 +42,14 @@ router.post("/register", async (req, res, next) => {
       res.status(500).json({ userExists: false, success: false });
     } else {
       console.log("{Registration Success}: New User Added - ", newUser[0]);
-      res.status(201).json({ userExists: false, success: true });
+      const verifyToken = utils.issueVerifyJWT({ username: newUser[0] }).token;
+
+      try {
+        utils.sendVerifyEmail(verifyToken, newUser[0]);
+      } catch (err) {
+        return res.status(501).json({ success: false, userExists: false });
+      }
+      return res.status(201).json({ userExists: false, success: true });
     }
   } else {
     console.error("{Registration Failed}: User Exists");
@@ -66,6 +80,21 @@ router.post("/login", async (req, res, next) => {
     });
   }
 
+  if (!getUser.rows[0].verified) {
+    console.log("{Auth Failed}: User not verified.");
+    const verifyToken = utils.issueVerifyJWT({ username: req.body.username })
+      .token;
+
+    try {
+      utils.sendVerifyEmail(verifyToken, req.body.username);
+    } catch (err) {
+      return res.status(501).json({ success: false, verified: false });
+    }
+    return res
+      .status(201)
+      .json({ success: false, verified: false, msg: "user is not verified" });
+  }
+
   const salt = getUser.rows[0].salt;
   const hash = getUser.rows[0].hash;
 
@@ -90,6 +119,99 @@ router.post("/login", async (req, res, next) => {
       user_error: true,
       msg: "username or password incorrect",
     });
+  }
+});
+
+// Email Confirmation
+router.post("/confirm/:token", async (req, res) => {
+  const token = req.params.token;
+  const { sub, forVer } = jwt.verify(token, PRIV_KEY, {
+    algorithms: ["RS256"],
+  });
+
+  if (forVer) {
+    const getUser = await db.query(
+      "SELECT username, verified FROM users WHERE username = $1;",
+      [sub]
+    );
+
+    if (getUser.error) {
+      console.error(getUser.error);
+      return res.status(500).json({ success: false, msg: "server error" });
+    }
+
+    if (getUser.rowCount == 0) {
+      return res
+        .status(401)
+        .json({ success: false, msg: "user doesn't exist" });
+    }
+
+    if (getUser.rows[0].verified == true) {
+      return res.status(401).json({
+        success: false,
+        alreadyVerified: true,
+        msg: "Already Verified",
+      });
+    }
+
+    const update = await db.query(
+      "UPDATE users SET verified = true WHERE username = $1",
+      [sub]
+    );
+
+    if (update.error) {
+      return res.status(500).json({ success: false, msg: "server error" });
+    }
+
+    return res.status(200).json({ success: true });
+  } else {
+    return res.status(401).json({ success: false });
+  }
+});
+
+// Email Cancel
+router.post("/cancel/:token", async (req, res) => {
+  const token = req.params.token;
+  const { sub, forVer } = jwt.verify(token, PRIV_KEY, {
+    algorithms: ["RS256"],
+  });
+
+  if (forVer) {
+    const getUser = await db.query(
+      "SELECT username, verified FROM users WHERE username = $1;",
+      [sub]
+    );
+
+    if (getUser.error) {
+      console.error(getUser.error);
+      return res.status(500).json({ success: false, msg: "server error" });
+    }
+
+    if (getUser.rowCount == 0) {
+      return res
+        .status(401)
+        .json({ success: false, msg: "user doesn't exist" });
+    }
+
+    if (getUser.rows[0].verified == true) {
+      return res.status(401).json({
+        success: false,
+        alreadyVerified: true,
+        msg: "Already Verified Cannot Cancel",
+      });
+    }
+
+    const deleteUser = await db.query("DELETE FROM users WHERE username = $1", [
+      sub,
+    ]);
+
+    if (deleteUser.error) {
+      return res.status(500).json({ success: false, msg: "server error" });
+    }
+
+    return res.status(200).json({ success: true });
+  } else {
+    return res.status(401).json({ success: false });
   }
 });
 //---------------//
