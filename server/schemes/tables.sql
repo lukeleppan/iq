@@ -32,6 +32,8 @@ CREATE TABLE "attempts" (
   attempt_id SERIAL PRIMARY KEY,
   problem_id BIGINT REFERENCES problems(problem_id),
   username VARCHAR(20) REFERENCES users(username),
+  points BIGINT NOT NULL,
+  house BIGINT REFERENCES houses(house_id),
   attempt_date TIMESTAMP NOT NULL,
   success BOOLEAN NOT NULL
 );

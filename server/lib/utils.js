@@ -1,6 +1,7 @@
 require("dotenv").config();
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
+const moment = require("moment");
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
@@ -138,8 +139,60 @@ function issueVerifyJWT(user) {
   };
 }
 
+/**
+ * @param {*} activeDate - problem active date
+ * @param {*} diff - problem difficulty
+ */
+function calcScore(activeDate, diff) {
+  const easyA = -(1 / 949320);
+  const moderateA = -(1 / 379728);
+  const hardA = -(1 / 189864);
+  const extremeA = -(1 / 94932);
+
+  const activeDateMoment = moment(activeDate);
+  const minutesSince = moment
+    .duration(moment().diff(activeDateMoment))
+    .asMinutes();
+
+  if (minutesSince > 4320) {
+    switch (diff) {
+      case 0:
+        return 20;
+
+      case 1:
+        return 50;
+
+      case 2:
+        return 100;
+
+      case 3:
+        return 200;
+    }
+  }
+
+  switch (diff) {
+    case 0:
+      return Math.round(easyA * (minutesSince + 75) * (minutesSince - 8640));
+
+    case 1:
+      return Math.round(
+        moderateA * (minutesSince + 75) * (minutesSince - 8640)
+      );
+
+    case 2:
+      return Math.round(hardA * (minutesSince + 75) * (minutesSince - 8640));
+
+    case 3:
+      return Math.round(extremeA * (minutesSince + 75) * (minutesSince - 8640));
+
+    default:
+      return 0;
+  }
+}
+
 module.exports.validPassword = validPassword;
 module.exports.genPassword = genPassword;
 module.exports.issueJWT = issueJWT;
 module.exports.issueVerifyJWT = issueVerifyJWT;
 module.exports.sendVerifyEmail = sendVerifyEmail;
+module.exports.calcScore = calcScore;

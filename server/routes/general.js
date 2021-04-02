@@ -1,5 +1,7 @@
 const router = require("express").Router();
 const db = require("../database");
+const utils = require("../lib/utils");
+const moment = require("moment");
 
 //---- General ----//
 // Get Problem by ID
@@ -27,7 +29,7 @@ router.get("/problems/:id", async (req, res) => {
 // Get Solved Problem
 router.get("/problem/solved", async (req, res) => {
   const problems = await db.query(
-    "SELECT problem_id, title, description, type, difficulty, image_url, author\
+    "SELECT problem_id, title, description, type, difficulty, image_url, answer, author, active_date, solved_date\
      FROM problems WHERE solved = true",
     []
   );
@@ -36,7 +38,7 @@ router.get("/problem/solved", async (req, res) => {
 // Get Active Problem
 router.get("/problem/active", async (req, res) => {
   const currentActiveProblems = await db.query(
-    "SELECT problem_id, title, description, type, difficulty, image_url, author\
+    "SELECT problem_id, title, description, type, difficulty, image_url, author, active_date\
      FROM problems WHERE active = true;",
     []
   );
@@ -46,17 +48,35 @@ router.get("/problem/active", async (req, res) => {
   }
 
   if (currentActiveProblems.rowCount == 0) {
-    res.status(200).json({ success: true, no_active: true });
+    return res.status(200).json({ success: true, no_active: true });
   }
 
-  const activeDate = currentActiveProblems.rows[0].active_date;
-  console.log(activeDate);
+  const activeDate = moment(currentActiveProblems.rows[0].active_date);
+  const diff = currentActiveProblems.rows[0].difficulty;
+  const nowDate = moment(Date.now());
 
-  return res
-    .status(200)
-    .json({ success: true, problem: currentActiveProblems.rows[0] });
+  if (moment.max([activeDate, nowDate]) === activeDate) {
+    return res.status(200).json({
+      success: true,
+      no_active: true,
+      coming_in: activeDate.fromNow(),
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    problem: currentActiveProblems.rows[0],
+    points: utils.calcScore(activeDate, diff),
+  });
 });
 
 //-----------------//
+
+//----- TEST ------//
+router.get("/test", async (req, res) => {
+  const points = utils.calcScore(moment(Date.now()).add({ minutes: 4500 }), 3);
+
+  return res.status(200).json({ points: points });
+});
 
 module.exports = router;

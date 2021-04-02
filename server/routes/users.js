@@ -5,6 +5,7 @@ const db = require("../database");
 const utils = require("../lib/utils");
 const fs = require("fs");
 const path = require("path");
+const passport = require("passport");
 
 const pathToKey = path.join(__dirname, "..", "id_rsa_priv.pem");
 const PRIV_KEY = fs.readFileSync(pathToKey, "utf-8");
@@ -214,6 +215,65 @@ router.post("/cancel/:token", async (req, res) => {
     return res.status(401).json({ success: false });
   }
 });
-//---------------//
+//---------------------------------//
+
+//---- USER PROBLEM MANAGEMENT ----//
+router.post(
+  "/answer",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { sub, house } = req.body;
+
+    const checkAnswer = await db.query(
+      "SELECT * FROM problems WHERE active = true;"
+    );
+
+    if (checkAnswer.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    if (checkAnswer.rowCount == 0) {
+      return res.status(401).json({ success: false });
+    }
+
+    if (checkAnswer.rows[0].answer == req.body.answer) {
+      const attempt = await db.query(
+        "INSERT INTO attempts\
+      (problem_id, username, points, house, attempt_date, success) VALUES ($1, $2, $3, $4, $5, $6);",
+        [
+          checkAnswer.rows[0].problem_id,
+          sub,
+          utils.calcScore(
+            checkAnswer.rows[0].active_date,
+            checkAnswer.rows[0].difficulty
+          ),
+          house,
+          moment().format(),
+          true,
+        ]
+      );
+
+      if (attempt.error) {
+        return res.status(500).json({ success: false });
+      }
+
+      return res.status(201).json({ success: true, correct: true });
+    }
+
+    const attempt = await db.query(
+      "INSERT INTO attempts\
+      (problem_id, username, points, house, attempt_date, success) VALUES ($1, $2, $3, $4, $5, $6);",
+      [checkAnswer.rows[0].problem_id, sub, 0, house, moment().format(), false]
+    );
+
+    if (attempt.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    return res.status(200).json({ success: true, correct: false });
+  }
+);
+
+//---------------------------------//
 
 module.exports = router;
