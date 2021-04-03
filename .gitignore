@@ -1,2 +1,3 @@
 *.session.sql
 *.pem
+node_modules
