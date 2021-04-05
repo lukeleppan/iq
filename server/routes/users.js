@@ -54,7 +54,7 @@ router.post("/register", async (req, res, next) => {
     }
   } else {
     console.error("{Registration Failed}: User Exists");
-    res.status(406).json({ userExists: true, success: false });
+    res.status(200).json({ userExists: true, success: false });
   }
 });
 
@@ -125,48 +125,58 @@ router.post("/login", async (req, res, next) => {
 
 // Email Confirmation
 router.post("/confirm/:token", async (req, res) => {
+  var jwtErr = false;
   const token = req.params.token;
-  const { sub, forVer } = jwt.verify(token, PRIV_KEY, {
-    algorithms: ["RS256"],
-  });
+  try {
+    const { sub, forVer } = jwt.verify(token, PRIV_KEY, {
+      algorithms: ["RS256"],
+    });
 
-  if (forVer) {
-    const getUser = await db.query(
-      "SELECT username, verified FROM users WHERE username = $1;",
-      [sub]
-    );
-
-    if (getUser.error) {
-      console.error(getUser.error);
-      return res.status(500).json({ success: false, msg: "server error" });
+    if (jwtErr) {
+      return;
     }
 
-    if (getUser.rowCount == 0) {
-      return res
-        .status(401)
-        .json({ success: false, msg: "user doesn't exist" });
+    if (forVer) {
+      const getUser = await db.query(
+        "SELECT username, verified FROM users WHERE username = $1;",
+        [sub]
+      );
+
+      if (getUser.error) {
+        console.error(getUser.error);
+        return res.status(200).json({ success: false, msg: "server error" });
+      }
+
+      if (getUser.rowCount == 0) {
+        return res
+          .status(200)
+          .json({ success: false, msg: "user doesn't exist" });
+      }
+
+      if (getUser.rows[0].verified == true) {
+        return res.status(200).json({
+          success: false,
+          alreadyVerified: true,
+          msg: "Already Verified",
+        });
+      }
+
+      const update = await db.query(
+        "UPDATE users SET verified = true WHERE username = $1",
+        [sub]
+      );
+
+      if (update.error) {
+        return res.status(500).json({ success: false, msg: "server error" });
+      }
+
+      return res.status(200).json({ success: true });
+    } else {
+      return res.status(200).json({ success: false });
     }
-
-    if (getUser.rows[0].verified == true) {
-      return res.status(401).json({
-        success: false,
-        alreadyVerified: true,
-        msg: "Already Verified",
-      });
-    }
-
-    const update = await db.query(
-      "UPDATE users SET verified = true WHERE username = $1",
-      [sub]
-    );
-
-    if (update.error) {
-      return res.status(500).json({ success: false, msg: "server error" });
-    }
-
-    return res.status(200).json({ success: true });
-  } else {
-    return res.status(401).json({ success: false });
+  } catch (error) {
+    res.status(200).json({ success: false });
+    jwtErr = true;
   }
 });
 

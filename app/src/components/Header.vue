@@ -1,16 +1,33 @@
 <template>
   <header>
-    <h1>{{ title }}</h1>
+    <DLModeSwitcher />
+    <AuthCentre />
   </header>
 </template>
 
 <script>
+import DLModeSwitcher from "@/components/DLModeSwitcher";
+import AuthCentre from "@/components/AuthCentre";
+
 export default {
   name: "Header",
   props: {
     title: String,
   },
+  components: {
+    DLModeSwitcher,
+    AuthCentre,
+  },
 };
 </script>
 
-<style></style>
+<style scoped>
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 10px;
+}
+</style>
