@@ -9,7 +9,7 @@ const path = require("path");
 const pathToKey = path.join(__dirname, "..", "id_rsa_priv.pem");
 const PRIV_KEY = fs.readFileSync(pathToKey, "utf-8");
 const {
-  URL,
+  CLIENT_URL,
   GMAIL_USER,
   GMAIL_PASS,
   OAUTH_CLIENTID,
@@ -34,8 +34,8 @@ const transporter = nodemailer.createTransport({
  * @param {*} username - username
  */
 function sendVerifyEmail(token, username) {
-  const verifyLink = URL + "/api/users/confirm/" + token;
-  const cancelLink = URL + "/api/users/cancel/" + token;
+  const verifyLink = CLIENT_URL + "/confirm/" + token;
+  const cancelLink = CLIENT_URL + "/cancel/" + token;
   return transporter.sendMail(
     {
       from: "tmctutors@gmail.com",

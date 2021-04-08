@@ -24,7 +24,7 @@ router.get(
   isAdmin(),
   async (req, res) => {
     const allProblems = await db.query(
-      "SELECT problem_id, title, description, type, difficulty, image_url, author FROM problems;"
+      "SELECT ROW_NUMBER() OVER(ORDER BY problem_id) - 1 AS index, problem_id, title, description, type, difficulty, image_url, author FROM problems ORDER BY problem_id;"
     );
 
     if (allProblems.error) {
@@ -51,13 +51,16 @@ router.post(
       answer,
     } = req.body;
 
-    const {
-      rows,
-    } = await db.query(
-      "INSERT INTO problems (title, description, type, difficulty, image_url, author, answer, active, solved) VALUES($1, $2, $3, $4, $5, $6, $7, false, false) RETURNING *",
+    const createProblem = await db.query(
+      "INSERT INTO problems (title, description, type, difficulty, image_url, author, answer, active, solved) VALUES($1, $2, $3, $4, $5, $6, $7, false, false)",
       [title, description, type, difficulty, image_url, author, answer]
     );
-    res.status(201).json({ success: true, record: rows[0] });
+
+    if (createProblem.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    res.status(201).json({ success: true });
   }
 );
 
@@ -175,13 +178,14 @@ router.get(
 );
 
 // Search Users
-router.get(
+router.post(
   "/users/search",
   passport.authenticate("jwt", { session: false }),
   isAdmin(),
   async (req, res, next) => {
+    console.log("{User Search Query}: ", req.body.search);
     const getUsers = await db.query(
-      `SELECT username, displayname, house, verified, admin FROM users WHERE username LIKE '%${req.body.search}%';`,
+      `SELECT ROW_NUMBER() OVER(ORDER BY admin DESC, username) - 1 AS index, username, displayname, house, verified, admin FROM users WHERE username LIKE '%${req.body.search}%' ORDER BY admin DESC, username;`,
       []
     );
 
@@ -191,6 +195,25 @@ router.get(
     }
 
     res.status(200).json({ success: true, users: getUsers.rows });
+  }
+);
+
+// Adminify User with username
+router.put(
+  "/users/adminify/:username",
+  passport.authenticate("jwt", { session: false }),
+  isAdmin(),
+  async (req, res, next) => {
+    const { username } = req.params;
+    const adminifyUser = await db.query(
+      "UPDATE users SET admin = true WHERE username = $1",
+      [username]
+    );
+
+    if (adminifyUser.error) {
+      return res.status(500).json({ success: false });
+    }
+    return res.status(200).json({ success: true });
   }
 );
 

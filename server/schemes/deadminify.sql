@@ -1,0 +1,1 @@
+UPDATE users SET admin = false WHERE username = '21danisi'

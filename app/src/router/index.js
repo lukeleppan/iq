@@ -1,9 +1,9 @@
-import Vue from "vue";
-import VueRouter from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 import Home from "../views/Home.vue";
-import ProblemCreate from "../views/admin/ProblemCreate.vue";
-
-Vue.use(VueRouter);
+import Registration from "../views/Registration.vue";
+import Authentication from "../views/Authentication.vue";
+import ConfirmEmail from "../views/ConfirmEmail.vue";
+import Admin from "../views/Admin.vue";
 
 const routes = [
   {
@@ -11,19 +11,30 @@ const routes = [
     name: "Home",
     component: Home,
   },
-  // {
-  //   path: "/admin",
-  //   name: "Admin",
-  //   component: Admin,
-  // },
   {
-    path: "/admin/create",
-    name: "Create Problem",
-    component: ProblemCreate,
+    path: "/registration",
+    name: "Registration",
+    component: Registration,
+  },
+  {
+    path: "/authentication",
+    name: "Authentication",
+    component: Authentication,
+  },
+  {
+    path: "/confirm/:token",
+    name: "Confirm",
+    component: ConfirmEmail,
+  },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: Admin,
   },
 ];
 
-const router = new VueRouter({
+const router = createRouter({
+  history: createWebHistory(process.env.BASE_URL),
   routes,
 });
 
