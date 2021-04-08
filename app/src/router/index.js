@@ -3,6 +3,7 @@ import Home from "../views/Home.vue";
 import Registration from "../views/Registration.vue";
 import Authentication from "../views/Authentication.vue";
 import ConfirmEmail from "../views/ConfirmEmail.vue";
+import CancelEmail from "../views/CancelEmail.vue";
 import Admin from "../views/Admin.vue";
 
 const routes = [
@@ -25,6 +26,11 @@ const routes = [
     path: "/confirm/:token",
     name: "Confirm",
     component: ConfirmEmail,
+  },
+  {
+    path: "/cancel/:token",
+    name: "Cancel",
+    component: CancelEmail,
   },
   {
     path: "/admin",

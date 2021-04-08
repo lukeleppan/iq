@@ -2,14 +2,11 @@
   <div id="main">
     <div class="wrapper" v-if="success">
       <i class="fas fa-check-circle fa-9x success-icon"></i>
-      <p class="success-text">Email Verified</p>
-      <router-link to="/authentication" class="btn"
-        >Proceed to Log in</router-link
-      >
+      <p class="success-text">Cancelled</p>
     </div>
     <div class="wrapper" v-else>
       <i class="fas fa-times-circle fa-9x fail-icon"></i>
-      <p class="fail-text">Email Verification Failed</p>
+      <p class="fail-text">Cancel Failed. Try Again Later.</p>
     </div>
   </div>
 </template>
@@ -18,7 +15,7 @@
 import axios from "axios";
 
 export default {
-  name: "ConfirmEmail",
+  name: "CancelEmail",
   data() {
     return {
       success: false,
@@ -29,7 +26,7 @@ export default {
     const token = this.$route.params.token;
 
     axios
-      .post(VUE_APP_API_URL + "/api/users/confirm/" + token)
+      .post(VUE_APP_API_URL + "/api/users/cancel/" + token)
       .then((res) => {
         if (res.data.success) {
           return (this.success = true);

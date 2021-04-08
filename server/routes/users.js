@@ -83,16 +83,8 @@ router.post("/login", async (req, res, next) => {
 
   if (!getUser.rows[0].verified) {
     console.log("{Auth Failed}: User not verified.");
-    const verifyToken = utils.issueVerifyJWT({ username: req.body.username })
-      .token;
-
-    try {
-      utils.sendVerifyEmail(verifyToken, req.body.username);
-    } catch (err) {
-      return res.status(501).json({ success: false, verified: false });
-    }
     return res
-      .status(201)
+      .status(200)
       .json({ success: false, verified: false, msg: "user is not verified" });
   }
 
@@ -120,6 +112,37 @@ router.post("/login", async (req, res, next) => {
       user_error: true,
       msg: "username or password incorrect",
     });
+  }
+});
+
+// Resend Email
+router.post("/resend", async (req, res, next) => {
+  const getUser = await db.query("SELECT * FROM users WHERE username = $1", [
+    req.body.username,
+  ]);
+
+  if (getUser.error) {
+    console.error("{server error}: during resending");
+    return res.status(500).json({ success: false });
+  }
+
+  if (getUser.rowCount === 0) {
+    console.log("{Resend Failed}: User Does Not Exist");
+    return res.status(200).json({
+      success: false,
+    });
+  }
+
+  if (!getUser.rows[0].verified) {
+    const verifyToken = utils.issueVerifyJWT({ username: req.body.username })
+      .token;
+
+    try {
+      utils.sendVerifyEmail(verifyToken, req.body.username);
+    } catch (err) {
+      return res.status(501).json({ success: false });
+    }
+    return res.status(201).json({ success: true });
   }
 });
 

@@ -23,6 +23,19 @@
             <input type="submit" class="btn sign-in-btn" value="Log in" />
             <div>
               <p id="error" v-if="error">{{ errorText }}</p>
+              <form v-if="needVerifiy" @submit.prevent="resend">
+                <label for="verify-username">Username</label>
+                <input
+                  type="text"
+                  v-model="verifyUsername"
+                  id="verify-username"
+                />
+                <input
+                  type="submit"
+                  class="btn resend-btn"
+                  value="Resend Email"
+                />
+              </form>
             </div>
           </form>
         </div>
@@ -43,9 +56,11 @@ export default {
     return {
       username: "",
       password: "",
+      verifyUsername: "",
 
       error: false,
       errorText: "",
+      needVerifiy: false,
     };
   },
   computed: {
@@ -53,6 +68,28 @@ export default {
   },
   methods: {
     ...mapActions(["fetchJWT"]),
+    resend() {
+      const { VUE_APP_API_URL } = process.env;
+
+      if (this.verifyUsername === "") {
+        this.error = true;
+        this.errorText = "Please Fill in Everything";
+        return;
+      }
+
+      axios
+        .post(VUE_APP_API_URL + "/api/users/resend", {
+          username: this.verifyUsername,
+        })
+        .then((res) => {
+          res;
+          this.needVerifiy = false;
+        })
+        .catch((error) => {
+          error;
+          this.needVerifiy = false;
+        });
+    },
     onSubmit() {
       const { VUE_APP_API_URL } = process.env;
       this.error = false;
@@ -62,13 +99,13 @@ export default {
 
       if (this.username === "") {
         this.error = true;
-        this.errorText = "Please Enter Username";
+        this.errorText = "Please Fill in Everything";
         return;
       }
 
       if (this.password === "") {
         this.error = true;
-        this.errorText = "Please Enter password";
+        this.errorText = "Please Fill in Everything";
         return;
       }
 
@@ -84,9 +121,12 @@ export default {
             this.fetchJWT();
             this.$router.push("/");
           } else if (res.data.user_error) {
-            console.log(res.data);
             this.error = true;
             this.errorText = "Username or Password Incorrect";
+          } else {
+            this.error = true;
+            this.errorText = "Please Verify using Email";
+            this.needVerifiy = true;
           }
         })
         .catch((error) => {
@@ -120,7 +160,7 @@ section {
   border-radius: 1rem;
   padding: 1rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
 }
 
 .register-title {
@@ -140,6 +180,7 @@ label {
   font-weight: bold;
 }
 
+input#verify-username,
 input#username,
 input#password {
   border: 1px solid black;
@@ -149,6 +190,7 @@ input#password {
   margin-bottom: 1rem;
 }
 
+input#verify-username:focus,
 input#username:focus,
 input#password:focus {
   outline: none;
@@ -156,6 +198,7 @@ input#password:focus {
   box-shadow: 0 0 0 4px rgb(85 61 192 / 10%);
 }
 
+input#verify-username:hover,
 input#username:hover,
 input#password:hover {
   outline: none;
@@ -165,10 +208,33 @@ input#password:hover {
 .sign-in-btn {
   background-color: cornflowerblue;
   border-color: cornflowerblue;
+  margin: 0rem;
 }
 
 .sign-in-btn:hover {
   background-color: rgba(100, 148, 237, 0.95);
   border-color: rgba(100, 148, 237, 0.95);
+}
+
+.resend-btn {
+  background-color: rgb(219, 106, 0);
+  border-color: rgb(219, 106, 0);
+  margin: 0rem;
+}
+
+.resend-btn:hover {
+  background-color: rgba(219, 106, 0, 0.9);
+  border-color: rgba(219, 106, 0, 0.9);
+}
+
+#error {
+  border: 2px solid rgb(194, 0, 0);
+  border-radius: 1rem;
+  background-color: rgb(255, 69, 69);
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  padding: 1rem;
+  margin: 1rem 0rem;
 }
 </style>
