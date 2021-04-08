@@ -1,15 +1,8 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from "vuex";
+import { jwtModule } from "./jwtModule";
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
-  state: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+export default createStore({
   modules: {
-  }
-})
+    jwt: jwtModule,
+  },
+});
