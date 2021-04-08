@@ -2,6 +2,19 @@
   <router-view />
 </template>
 
+<script>
+import { mapActions } from "vuex";
+
+export default {
+  methods: {
+    ...mapActions(["fetchJWT"]),
+  },
+  mounted() {
+    this.fetchJWT();
+  },
+};
+</script>
+
 <style>
 * {
   box-sizing: border-box;

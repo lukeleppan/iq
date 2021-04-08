@@ -1,12 +1,12 @@
 <template>
   <header>
-    <DLModeSwitcher />
+    <GithubLink />
     <AuthCentre />
   </header>
 </template>
 
 <script>
-import DLModeSwitcher from "@/components/DLModeSwitcher";
+import GithubLink from "@/components/GithubLink";
 import AuthCentre from "@/components/AuthCentre";
 
 export default {
@@ -15,7 +15,7 @@ export default {
     title: String,
   },
   components: {
-    DLModeSwitcher,
+    GithubLink,
     AuthCentre,
   },
 };
@@ -25,7 +25,7 @@ export default {
 header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 10px;
   margin-left: 20px;
   margin-right: 10px;

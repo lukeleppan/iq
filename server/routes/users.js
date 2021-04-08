@@ -74,7 +74,7 @@ router.post("/login", async (req, res, next) => {
 
   if (getUser.rowCount === 0) {
     console.log("{Auth Failed}: User Does Not Exist");
-    return res.status(401).json({
+    return res.status(200).json({
       success: false,
       user_error: true,
       msg: "username or password incorrect",
@@ -115,7 +115,7 @@ router.post("/login", async (req, res, next) => {
       .status(200)
       .json({ success: true, token: token.token, expiresIn: token.expires });
   } else {
-    res.status(401).json({
+    res.status(200).json({
       success: false,
       user_error: true,
       msg: "username or password incorrect",

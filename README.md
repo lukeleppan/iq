@@ -1,1 +1,1 @@
-# The Untitled Game of Logic
+# iKhwezi Quiz
