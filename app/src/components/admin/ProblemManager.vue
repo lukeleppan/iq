@@ -40,34 +40,38 @@
               v-model="difficulty"
               type="radio"
               value="0"
+              class="tab"
               name="difficulty"
               id="easy"
             />
-            <label for="easy">Easy</label>
+            <label for="easy" id="easy">Easy</label>
             <input
               v-model="difficulty"
               type="radio"
               value="1"
+              class="tab"
               name="difficulty"
               id="moderate"
             />
-            <label for="moderate">Moderate</label>
+            <label for="moderate" id="moderate">Moderate</label>
             <input
               v-model="difficulty"
               type="radio"
               value="2"
+              class="tab"
               name="difficulty"
               id="hard"
             />
-            <label for="hard">Hard</label>
+            <label for="hard" id="hard">Hard</label>
             <input
               v-model="difficulty"
               type="radio"
               value="3"
+              class="tab"
               name="difficulty"
               id="extreme"
             />
-            <label for="extreme">Extreme</label>
+            <label for="extreme" id="extreme">Extreme</label>
             <label for="image-url">Image URL</label>
             <input
               v-model="imageUrl"
@@ -128,10 +132,23 @@
             </div>
             <div class="action-buttons">
               <button
-                class="btn admin-button"
-                @click="edit(problem.problem_id)"
+                v-if="!problem.active"
+                class="btn activate-btn"
+                @click="activateProblem(problem.problem_id)"
               >
-                Edit Problem
+                Activate
+              </button>
+              <button
+                class="btn edit-btn"
+                @click="editProblem(problem.problem_id)"
+              >
+                Edit
+              </button>
+              <button
+                class="btn delete-btn"
+                @click="deleteProblem(problem.problem_id)"
+              >
+                Delete
               </button>
             </div>
           </li>
@@ -247,6 +264,48 @@ export default {
           }
         });
     },
+    activateProblem(id) {
+      const { VUE_APP_API_URL } = process.env;
+
+      axios({
+        method: "put",
+        url: VUE_APP_API_URL + "/api/admin/problem/activate/" + id,
+        headers: { Authorization: this.jwt },
+      })
+        .then((res) => {
+          if (res.data.success === true) {
+            alert("Problem Activated");
+            this.problems = [];
+            this.getProblems();
+          }
+        })
+        .catch((error) => {
+          if (error) {
+            alert("Error During Problem Creation");
+          }
+        });
+    },
+    deleteProblem(id) {
+      const { VUE_APP_API_URL } = process.env;
+
+      axios({
+        method: "delete",
+        url: VUE_APP_API_URL + "/api/admin/problems/" + id,
+        headers: { Authorization: this.jwt },
+      })
+        .then((res) => {
+          if (res.data.success === true) {
+            alert("Problem Deleted");
+            this.problems = [];
+            this.getProblems();
+          }
+        })
+        .catch((error) => {
+          if (error) {
+            alert("Error During Problem Deletion");
+          }
+        });
+    },
   },
   mounted() {
     this.loading = true;
@@ -265,8 +324,7 @@ export default {
 }
 
 #main {
-  margin: 1rem;
-  padding: 1rem 2rem;
+  padding: 1rem 1rem;
   width: 100%;
   max-width: 800px;
 }
@@ -369,6 +427,11 @@ img {
   margin-bottom: 0.4rem;
 }
 
+#description-preview {
+  width: 250px;
+  word-wrap: break-word;
+}
+
 .problem-item {
   display: flex;
   flex-direction: row;
@@ -386,6 +449,90 @@ img {
 
 .problem-details {
   margin-left: 0.5rem;
+}
+
+input.tab {
+  display: none;
+}
+
+input.tab + label {
+  cursor: pointer;
+  float: left;
+  text-align: center;
+  border: 2px solid rgb(95, 95, 95);
+  border-radius: 2rem;
+  margin-right: 2px;
+  margin-left: 2px;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  padding: 0.5em 1em;
+  position: relative;
+}
+
+[type="radio"]:checked + label {
+  background-color: rgb(199, 199, 199);
+  z-index: 1;
+}
+
+input.tab + label:hover {
+  background-color: rgb(199, 199, 199);
+}
+
+[type="radio"]:checked + #easy {
+  border-color: rgb(34, 168, 0);
+  background-color: rgb(34, 168, 0);
+  color: white;
+}
+
+[type="radio"]:checked + #moderate {
+  border-color: rgb(255, 237, 73);
+  background-color: rgb(255, 237, 73);
+  color: black;
+}
+
+[type="radio"]:checked + #hard {
+  border-color: rgb(255, 145, 0);
+  background-color: rgb(255, 145, 0);
+  color: white;
+}
+
+[type="radio"]:checked + #extreme {
+  border-color: rgb(255, 50, 50);
+  background-color: rgb(255, 50, 50);
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.title-text {
+  font-size: 16px;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  widows: 200px;
+}
+
+.author-text {
+  font-size: 14px;
+}
+
+.activate-btn {
+  background-color: rgb(0, 140, 0);
+  border: 2px solid rgb(0, 140, 0);
+  padding: 0.5rem 1rem;
+  color: white;
+}
+
+.edit-btn {
+  padding: 0.5rem 1rem;
+  color: white;
+}
+
+.delete-btn {
+  background-color: rgb(200, 0, 0);
+  border: 2px solid rgb(200, 0, 0);
+  padding: 0.5rem 1rem;
+  color: white;
 }
 
 @media only screen and (max-width: 500px) {

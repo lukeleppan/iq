@@ -24,7 +24,7 @@ router.get(
   isAdmin(),
   async (req, res) => {
     const allProblems = await db.query(
-      "SELECT ROW_NUMBER() OVER(ORDER BY problem_id) - 1 AS index, problem_id, title, description, type, difficulty, image_url, author FROM problems ORDER BY problem_id;"
+      "SELECT ROW_NUMBER() OVER(ORDER BY active DESC, problem_id) - 1 AS index, problem_id, title, description, type, difficulty, image_url, active, author FROM problems ORDER BY active DESC, problem_id;"
     );
 
     if (allProblems.error) {
