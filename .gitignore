@@ -2,3 +2,4 @@
 *.pem
 ./server/.env
 node_modules
+dbdata
