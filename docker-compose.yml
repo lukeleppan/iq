@@ -16,8 +16,6 @@ services:
       - db
   app:
     build: ./app
-    volumes:
-      - ./app/dist/:/app/dist
     ports:
       - 8080:8080
     depends_on:
@@ -26,7 +24,6 @@ services:
   nginx:
     image: nginx
     volumes:
-      - ./app/dist/:/usr/share/nginx/app
       - ./nginx.conf:/etc/nginx/nginx.conf
       - /etc/letsencrypt/:/etc/letsencrypt/
     ports:
