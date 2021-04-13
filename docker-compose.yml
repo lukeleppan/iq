@@ -21,15 +21,15 @@ services:
     depends_on:
       - db
       - server
-  nginx:
-    image: nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - /etc/letsencrypt/:/etc/letsencrypt/
-    ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      - db
-      - app
-      - server
+  # nginx:
+  #   image: nginx
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #     - /etc/letsencrypt/:/etc/letsencrypt/
+  #   ports:
+  #     - 80:80
+  #     - 443:443
+  #   depends_on:
+  #     - db
+  #     - app
+  #     - server
