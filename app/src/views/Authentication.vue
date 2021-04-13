@@ -52,6 +52,20 @@ import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "Authentication",
+  metaInfo: {
+    title: "Sign in to your account | iKhwezi Quiz",
+    htmlAttrs: {
+      lang: "en-US",
+    },
+    meta: [
+      { charset: "utf-8" },
+      {
+        name: "description",
+        content: "The Interhouse iKhwezi Quiz!",
+      },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+    ],
+  },
   data() {
     return {
       username: "",
