@@ -12,5 +12,5 @@ COPY . .
 
 RUN npm run build
 
-CMD [ "http-server", "dist", "--proxy", "http://localhost:8080?" ]
+CMD [ "http-server", "dist" ]
 
