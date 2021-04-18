@@ -1,7 +1,9 @@
+-- @conn iqdb
 DROP TABLE attempts;
 DROP TABLE problems;
 DROP TABLE users;
 DROP TABLE houses;
+
 
 CREATE TABLE "houses" (
   house_id SERIAL PRIMARY KEY,

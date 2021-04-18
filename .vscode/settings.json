@@ -1,5 +1,16 @@
 {
-  "sqltools.connections": [],
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5431,
+      "driver": "PostgreSQL",
+      "name": "iqdb",
+      "database": "iqdb",
+      "username": "postgres",
+      "password": "1905"
+    }
+  ],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
