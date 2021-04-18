@@ -1,16 +1,5 @@
 {
-  "sqltools.connections": [
-    {
-      "previewLimit": 50,
-      "server": "localhost",
-      "port": 5432,
-      "driver": "PostgreSQL",
-      "name": "lgdb",
-      "database": "lgdb",
-      "username": "postgres",
-      "password": ""
-    }
-  ],
+  "sqltools.connections": [],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
