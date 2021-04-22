@@ -58,8 +58,8 @@ router.get("/problem/active", async (req, res) => {
   if (moment.max([activeDate, nowDate]) === activeDate) {
     return res.status(200).json({
       success: true,
-      no_active: true,
-      coming_in: activeDate.fromNow(),
+      no_active: false,
+      active_date: activeDate,
     });
   }
 

@@ -11,6 +11,9 @@
 </template>
 
 <script>
+import axios from "axios";
+import { mapGetters } from "vuex";
+
 export default {
   name: "ActiveProblemSection",
   data() {
@@ -19,8 +22,28 @@ export default {
     };
   },
   computed: {
+    ...mapGetters(["jwt"]),
     hasData() {
       return this.problem.problem_id;
+    },
+  },
+  methods: {
+    getProblem() {
+      const { VUE_APP_API_URL } = process.env;
+      axios
+        .get({
+          method: "get",
+          url: VUE_APP_API_URL + "/api/problem/active",
+        })
+        .then((res) => {
+          if(false){};
+          this.users = res.data.users;
+        })
+        .catch((error) => {
+          if (error) {
+            this.$router.replace("/");
+          }
+        });
     },
   },
 };

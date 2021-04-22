@@ -251,6 +251,7 @@ router.post("/cancel/:token", async (req, res) => {
 //---------------------------------//
 
 //---- USER PROBLEM MANAGEMENT ----//
+// ANSWER
 router.post(
   "/answer",
   passport.authenticate("jwt", { session: false }),
@@ -270,15 +271,38 @@ router.post(
     }
 
     if (checkAnswer.rows[0].answer == req.body.answer) {
+      const currentActiveProblems = await db.query(
+        "SELECT problem_id FROM problems WHERE active = true;",
+        []
+      );
+
+      if (currentActiveProblems.error) {
+        return res.status(500).json({ success: false });
+      }
+
+      if (currentActiveProblems.rowCount == 0) {
+        return res.status(200).json({ success: true, no_active: true });
+      }
+
+      const successAttemptsQuery = db.query(
+        "SELECT COUNT(1) FROM attempts WHERE problem_id = $1;",
+        [currentActiveProblems.rows[0].problem_id]
+      );
+
+      if (successAttemptsQuery.error) {
+        return res.status(500).json({ success: false });
+      }
+
       const attempt = await db.query(
         "INSERT INTO attempts\
-      (problem_id, username, points, house, attempt_date, success) VALUES ($1, $2, $3, $4, $5, $6);",
+        (problem_id, username, points, house, attempt_date, success) VALUES ($1, $2, $3, $4, $5, $6);",
         [
           checkAnswer.rows[0].problem_id,
           sub,
           utils.calcScore(
             checkAnswer.rows[0].active_date,
-            checkAnswer.rows[0].difficulty
+            checkAnswer.rows[0].difficulty,
+            successAttemptsQuery.rows[0].count
           ),
           house,
           moment().format(),
@@ -288,6 +312,18 @@ router.post(
 
       if (attempt.error) {
         return res.status(500).json({ success: false });
+      }
+
+      if (successAttemptsQuery.rows[0].count == 9) {
+        const problem = await db.query(
+          "UPDATE problems\
+          SET closed = true\
+          WHERE problem_id = $1",
+          [checkAnswer.rows[0].problem_id]
+        );
+        if (problem.error) {
+          return res.status(500).json({ success: false });
+        }
       }
 
       return res.status(201).json({ success: true, correct: true });
@@ -306,6 +342,9 @@ router.post(
     return res.status(200).json({ success: true, correct: false });
   }
 );
+
+// ANSWERABLE
+// TODO
 
 //---------------------------------//
 
