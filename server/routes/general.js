@@ -33,6 +33,12 @@ router.get("/problem/solved", async (req, res) => {
      FROM problems WHERE solved = true",
     []
   );
+
+  if (problems.error) {
+    return res.status(500).json({ success: false });
+  }
+
+  return res.status(200).json({ problems: problems.rows });
 });
 
 // Get Active Problem
