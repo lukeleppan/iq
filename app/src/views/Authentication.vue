@@ -84,17 +84,17 @@ export default {
     ...mapActions(["fetchJWT"]),
     resend() {
       const { VUE_APP_API_URL } = process.env;
-
       if (this.verifyUsername === "") {
         this.error = true;
         this.errorText = "Please Fill in Everything";
         return;
       }
-
-      axios
-        .post(VUE_APP_API_URL + "/api/users/resend", {
-          username: this.verifyUsername,
-        })
+      axios({
+        method: "post",
+        baseURL: VUE_APP_API_URL,
+        url: "/api/users/resend",
+        data: { username: this.verifyUsername },
+      })
         .then((res) => {
           res;
           this.needVerifiy = false;
@@ -108,26 +108,22 @@ export default {
       const { VUE_APP_API_URL } = process.env;
       this.error = false;
       this.errorText = "";
-
-      console.log(VUE_APP_API_URL);
-
       if (this.username === "") {
         this.error = true;
         this.errorText = "Please Fill in Everything";
         return;
       }
-
       if (this.password === "") {
         this.error = true;
         this.errorText = "Please Fill in Everything";
         return;
       }
-
-      axios
-        .post(VUE_APP_API_URL + "/api/users/login", {
-          username: this.username,
-          password: this.password,
-        })
+      axios({
+        method: "post",
+        baseURL: VUE_APP_API_URL,
+        url: "/api/users/login",
+        data: { username: this.username, password: this.password },
+      })
         .then((res) => {
           if (res.data.success) {
             this.success = true;
