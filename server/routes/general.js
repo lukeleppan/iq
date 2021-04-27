@@ -69,20 +69,33 @@ router.get("/problem/active", async (req, res) => {
     });
   }
 
+  const successes = await db.query(
+    "SELECT COUNT(0) FROM attempts WHERE problem_id = $1 AND success = false;",
+    [currentActiveProblems.rows[0].problem_id]
+  );
+
+  if (successes.error) {
+    return res.status(500).json({ success: false });
+  }
+
+  const users = await db.query(
+    "SELECT users.username, users.displayname, users.house FROM attempts INNER JOIN users\
+    ON users.username = attempts.username WHERE attempts.problem_id = $1 AND attempts.success = true;",
+    [currentActiveProblems.rows[0].problem_id]
+  );
+
+  if (users.error) {
+    return res.status(500).json({ success: false });
+  }
+
   return res.status(200).json({
     success: true,
     problem: currentActiveProblems.rows[0],
-    points: utils.calcScore(activeDate, diff),
+    users: users.rows,
+    points: utils.calcScore(activeDate, diff, successes.rows[0].count),
   });
 });
 
 //-----------------//
-
-//----- TEST ------//
-router.get("/test", async (req, res) => {
-  const points = utils.calcScore(moment(Date.now()).add({ minutes: 4500 }), 3);
-
-  return res.status(200).json({ points: points });
-});
 
 module.exports = router;

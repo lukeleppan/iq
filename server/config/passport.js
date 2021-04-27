@@ -17,7 +17,7 @@ module.exports = async (passport) => {
   await passport.use(
     new JwtStrategy(options, async function (jwt_payload, done) {
       const getUser = await db.query(
-        "SELECT COUNT(1) FROM users WHERE username = $1;",
+        "SELECT COUNT(0) FROM users WHERE username = $1;",
         [jwt_payload.sub]
       );
 

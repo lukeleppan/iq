@@ -9,6 +9,16 @@
       "database": "iqdb",
       "username": "postgres",
       "password": "1905"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "iq",
+      "database": "iqdb",
+      "username": "postgres",
+      "password": "Lep190525"
     }
   ],
   "editor.defaultFormatter": "esbenp.prettier-vscode",

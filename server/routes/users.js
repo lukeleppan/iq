@@ -6,6 +6,7 @@ const utils = require("../lib/utils");
 const fs = require("fs");
 const path = require("path");
 const passport = require("passport");
+const moment = require("moment");
 
 const pathToKey = path.join(__dirname, "..", "id_rsa_priv.pem");
 const PRIV_KEY = fs.readFileSync(pathToKey, "utf-8");
@@ -266,25 +267,40 @@ router.post(
       return res.status(500).json({ success: false });
     }
 
-    if (checkAnswer.rowCount == 0) {
+    if (checkAnswer.rowCount === 0) {
       return res.status(401).json({ success: false });
     }
 
+    const currentActiveProblems = await db.query(
+      "SELECT problem_id FROM problems WHERE active = true;",
+      []
+    );
+
+    if (currentActiveProblems.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    if (currentActiveProblems.rowCount == 0) {
+      return res.status(200).json({ success: true, no_active: true });
+    }
+
+    console.log(req.body);
+
+    const checkAnswered = await db.query(
+      "SELECT COUNT(0) FROM attempts WHERE username = $1 AND problem_id = $2 AND success = true;",
+      [sub, currentActiveProblems.rows[0].problem_id]
+    );
+
+    if (checkAnswered.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    if (!checkAnswered.rows[0].count === 0) {
+      return res.status(200).json({ success: true, correct: false });
+    }
+
     if (checkAnswer.rows[0].answer == req.body.answer) {
-      const currentActiveProblems = await db.query(
-        "SELECT problem_id FROM problems WHERE active = true;",
-        []
-      );
-
-      if (currentActiveProblems.error) {
-        return res.status(500).json({ success: false });
-      }
-
-      if (currentActiveProblems.rowCount == 0) {
-        return res.status(200).json({ success: true, no_active: true });
-      }
-
-      const successAttemptsQuery = db.query(
+      const successAttemptsQuery = await db.query(
         "SELECT COUNT(1) FROM attempts WHERE problem_id = $1;",
         [currentActiveProblems.rows[0].problem_id]
       );
@@ -314,7 +330,7 @@ router.post(
         return res.status(500).json({ success: false });
       }
 
-      if (successAttemptsQuery.rows[0].count == 9) {
+      if (successAttemptsQuery.rows[0].count >= 9) {
         const problem = await db.query(
           "UPDATE problems\
           SET closed = true\
@@ -344,7 +360,49 @@ router.post(
 );
 
 // ANSWERABLE
-// TODO
+router.get(
+  "/answerable",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { sub, house } = req.body;
+
+    const checkAnswered = await db.query(
+      "SELECT COUNT(0) FROM attempts WHERE username = $1 AND success = true;",
+      [sub]
+    );
+
+    if (checkAnswered.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    if (!checkAnswered.rows[0].count === 0) {
+      const checkCooldown = await db.query(
+        "SELECT attempt_date FROM attempts WHERE username = $1 ORDER BY attempt_date DESC",
+        [sub]
+      );
+
+      if (checkCooldown.error) {
+        return res.status(500).json({ success: false });
+      }
+
+      if (
+        moment().isBefore(
+          moment(checkAnswered.rows[0].attempt_date).add(30, "minutes")
+        )
+      ) {
+        return res.status(200).json({
+          success: true,
+          answerable: false,
+          cooldown: moment(checkAnswered.rows[0].attempt_date).format(),
+        });
+      }
+
+      return res.status(200).json({ success: true, answerable: true });
+    }
+
+    res.status(200).json({ success: true, answerable: false });
+  }
+);
 
 //---------------------------------//
 

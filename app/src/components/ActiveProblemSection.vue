@@ -1,6 +1,19 @@
 <template>
   <div class="main">
-    <section v-if="hasData"></section>
+    <div class="loading" v-if="loading">
+      <div class="lds-ripple">
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+    <section v-else-if="hasData">
+      <ProblemDisplay
+        :problem="problem"
+        :points="points"
+        @answered="getProblem"
+      />
+      <LeaderUsers :users="users" />
+    </section>
     <div v-else>
       <h1 class="coming-soon-heading">Hold On...</h1>
       <h3 class="coming-coon-subtitle">
@@ -13,13 +26,23 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
+import moment from "moment";
+import ProblemDisplay from "@/components/ProblemDisplay";
+import LeaderUsers from "@/components/LeaderUsers";
 
 export default {
   name: "ActiveProblemSection",
   data() {
     return {
+      loading: false,
       problem: {},
+      points: 0,
+      users: [],
+      openDate: {},
     };
+  },
+  created() {
+    this.getProblem();
   },
   computed: {
     ...mapGetters(["jwt"]),
@@ -29,15 +52,28 @@ export default {
   },
   methods: {
     getProblem() {
+      this.loading = true;
       const { VUE_APP_API_URL } = process.env;
-      axios
-        .get({
-          method: "get",
-          url: VUE_APP_API_URL + "/api/problem/active",
-        })
+      axios({
+        method: "get",
+        baseURL: VUE_APP_API_URL,
+        url: "/api/problem/active",
+      })
         .then((res) => {
-          if(false){};
-          this.users = res.data.users;
+          if (res.data.no_active) {
+            this.problem = {};
+            this.openDate = moment()
+              .add(1, "day")
+              .set({ hour: 15, minute: 0, second: 0 });
+          } else if (res.data.problem) {
+            this.problem = res.data.problem;
+            this.users = res.data.users;
+            this.points = res.data.points;
+          } else {
+            this.problem = {};
+            this.openDate = res.data.active_date;
+          }
+          this.loading = false;
         })
         .catch((error) => {
           if (error) {
@@ -46,20 +82,57 @@ export default {
         });
     },
   },
+  components: {
+    ProblemDisplay,
+    LeaderUsers,
+  },
 };
 </script>
 
 <style scoped>
-.main {
-  display: flex;
-  justify-content: center;
-}
-
 section {
   display: flex;
-  flex-direction: column;
-  border: 2px solid rgb(95, 95, 95);
-  border-radius: 0.5rem;
-  max-width: 500px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0px 10px;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  margin: 100px;
+}
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid cornflowerblue;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
 }
 </style>
