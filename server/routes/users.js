@@ -99,7 +99,7 @@ router.post("/login", async (req, res, next) => {
       username: getUser.rows[0].username,
       displayname: getUser.rows[0].displayname,
       admin: getUser.rows[0].admin,
-      house: getUser.rows[0].displayname,
+      house: getUser.rows[0].house,
     };
 
     const token = utils.issueJWT(user);
@@ -257,7 +257,7 @@ router.post(
   "/answer",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    const { sub, house } = req.body;
+    const { sub, house } = req.user;
 
     const checkAnswer = await db.query(
       "SELECT * FROM problems WHERE active = true;"

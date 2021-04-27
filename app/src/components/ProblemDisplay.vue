@@ -64,7 +64,7 @@ export default {
   width: 100%;
   min-width: 200px;
   max-width: 500px;
-  margin-right: 5px;
+  margin-left: 5px;
 }
 
 .image {

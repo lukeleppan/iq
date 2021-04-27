@@ -12,6 +12,9 @@ module.exports = {
       duration,
       rows: res.rowCount,
     });
+    if (res.error) {
+      console.log(res.error);
+    }
     return res;
   },
 

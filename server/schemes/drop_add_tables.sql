@@ -1,4 +1,4 @@
--- @conn iqdb
+-- @conn iq
 DROP TABLE attempts;
 DROP TABLE problems;
 DROP TABLE users;

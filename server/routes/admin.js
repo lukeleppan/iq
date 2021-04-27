@@ -52,7 +52,7 @@ router.post(
     } = req.body;
 
     const createProblem = await db.query(
-      "INSERT INTO problems (title, description, type, difficulty, image_url, author, answer, active, solved) VALUES($1, $2, $3, $4, $5, $6, $7, false, false)",
+      "INSERT INTO problems (title, description, type, difficulty, image_url, author, answer, active, closed) VALUES($1, $2, $3, $4, $5, $6, $7, false, false)",
       [title, description, type, difficulty, image_url, author, answer]
     );
 

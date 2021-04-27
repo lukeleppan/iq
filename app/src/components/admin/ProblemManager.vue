@@ -96,18 +96,31 @@
               name="answer"
               id="answer"
             />
-            <input type="submit" class="btn" />
+            <input type="submit" class="btn" value="Create" />
           </form>
           <div id="problem-preview">
             <div id="waiting-preview-text" v-if="waiting">
               Waiting for data...
             </div>
             <div id="problem-preview-main" v-else>
-              <h3 id="problem-number">Preview:</h3>
-              <img :src="imageUrl" alt="preview" />
-              <p id="title-preview">{{ title }}</p>
-              <p id="author-preview">By {{ author }}</p>
-              <p id="description-preview">{{ description }}</p>
+              <img class="image" :src="imageUrl" alt="image" />
+              <div class="info">
+                <div class="title-author-wrapper">
+                  <h1 class="title">
+                    <span>{{ title }}</span>
+                    <span v-if="easy" class="easy">Easy {{ type }}</span>
+                    <span v-else-if="moderate" class="moderate"
+                      >Moderate {{ type }}
+                    </span>
+                    <span v-else-if="hard" class="hard">Hard {{ type }}</span>
+                    <span v-else-if="extreme" class="extreme"
+                      >Extreme {{ type }}
+                    </span>
+                  </h1>
+                  <h3 class="author">by {{ author }}</h3>
+                </div>
+                <p class="description">{{ description }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -209,6 +222,18 @@ export default {
       } else {
         return false;
       }
+    },
+    easy() {
+      return this.difficulty == 0 ? true : false;
+    },
+    moderate() {
+      return this.difficulty == 1 ? true : false;
+    },
+    hard() {
+      return this.difficulty == 2 ? true : false;
+    },
+    extreme() {
+      return this.difficulty == 3 ? true : false;
     },
   },
   methods: {
@@ -326,7 +351,7 @@ export default {
 #main {
   padding: 1rem 1rem;
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
 }
 
 #problems-view {
@@ -369,8 +394,8 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  max-width: auto;
-  min-width: 250px;
+  padding-bottom: 10px;
+  margin: 0px 10px;
 }
 
 #create-problem-form {
@@ -378,21 +403,22 @@ export default {
   flex-direction: column;
   border: 2px solid rgb(95, 95, 95);
   border-radius: 0.5rem;
-  margin-left: 1rem;
-  margin-bottom: 1rem;
-  margin-right: 1rem;
-  padding: 0.5rem;
+  padding: 10px;
+  width: 100%;
+  min-width: 200px;
+  max-width: 350px;
+  margin-right: 5px;
 }
 
-#problem-preview {
+#problem-preview-main {
+  display: flex;
+  flex-direction: column;
   border: 2px solid rgb(95, 95, 95);
   border-radius: 0.5rem;
-  margin-right: 1rem;
-  margin-bottom: 1rem;
-  margin-left: 1rem;
-  padding: 0.5rem;
-  max-width: auto;
-  min-width: 250px;
+  width: 100%;
+  min-width: 200px;
+  max-width: 500px;
+  margin-left: 5px;
 }
 
 textarea {
@@ -409,27 +435,6 @@ textarea {
 .create-input:focus {
   outline: none;
   border-color: black;
-}
-
-img {
-  border-radius: 0.5rem;
-  width: 250px;
-  height: auto;
-}
-
-#title-preview {
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-#author-preview {
-  font-size: 0.8rem;
-  margin-bottom: 0.4rem;
-}
-
-#description-preview {
-  width: 250px;
-  word-wrap: break-word;
 }
 
 .problem-item {
@@ -535,6 +540,73 @@ input.tab + label:hover {
   color: white;
 }
 
+.image {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+}
+.difficulty-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+.info {
+  padding: 0.5rem;
+}
+.title-author-wrapper {
+  margin-bottom: 20px;
+}
+.title {
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+.author {
+  font-size: 16px;
+  color: hsl(0, 0%, 10%);
+}
+.easy {
+  padding: 5px 10px;
+  margin-left: 5px;
+  border-radius: 0.2rem;
+  border-color: #01b051;
+  background-color: #01b051;
+  color: white;
+  font-size: 14px;
+  word-wrap: nowrap;
+  white-space: nowrap;
+}
+.moderate {
+  padding: 5px 10px;
+  margin-left: 5px;
+  border-radius: 0.2rem;
+  border-color: #e6e600;
+  background-color: #e6e600;
+  color: rgba(0, 0, 0, 0.9);
+  font-size: 14px;
+  word-wrap: nowrap;
+  white-space: nowrap;
+}
+.hard {
+  padding: 5px 10px;
+  margin-left: 5px;
+  border-radius: 0.2rem;
+  border-color: rgb(255, 145, 0);
+  background-color: rgb(255, 145, 0);
+  color: rgba(0, 0, 0, 0.863);
+  font-size: 14px;
+  word-wrap: nowrap;
+  white-space: nowrap;
+}
+.extreme {
+  padding: 5px 7px;
+  margin-left: 5px;
+  border-radius: 0.2rem;
+  border-color: #ff0100;
+  background-color: #ff0100;
+  color: white;
+  font-size: 14px;
+  word-wrap: nowrap;
+  white-space: nowrap;
+}
+
 @media only screen and (max-width: 500px) {
   .create-problem-text {
     font-size: 15px;
@@ -543,6 +615,17 @@ input.tab + label:hover {
   .create-problem-button {
     padding: 0.5rem 0.5rem;
     font-size: 12px;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  #create-problem-form {
+    margin: none;
+    margin-bottom: 10px;
+  }
+  #problem-preview {
+    margin-right: none;
+    max-width: 350px;
   }
 }
 </style>
