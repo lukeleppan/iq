@@ -70,7 +70,7 @@ router.get("/problem/active", async (req, res) => {
   }
 
   const successes = await db.query(
-    "SELECT COUNT(0) FROM attempts WHERE problem_id = $1 AND success = false;",
+    "SELECT COUNT(0) FROM attempts WHERE problem_id = $1 AND success = true;",
     [currentActiveProblems.rows[0].problem_id]
   );
 
@@ -79,7 +79,7 @@ router.get("/problem/active", async (req, res) => {
   }
 
   const users = await db.query(
-    "SELECT users.username, users.displayname, users.house FROM attempts INNER JOIN users\
+    "SELECT users.username, users.displayname, users.house, attempts.points FROM attempts INNER JOIN users\
     ON users.username = attempts.username WHERE attempts.problem_id = $1 AND attempts.success = true;",
     [currentActiveProblems.rows[0].problem_id]
   );

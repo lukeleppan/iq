@@ -1,11 +1,14 @@
 <template>
-  <div class="main"></div>
+  <div class="main">
+    <h1>A New Problem will arrive tomorrow at 15:00.</h1>
+  </div>
 </template>
 
 <script>
+import moment from "moment";
 export default {
   name: "CountDown",
-  props: ["year", "month", "date", "hour", "minute", "second", "millisecond"],
+  props: ["date"],
   data() {
     return {
       displayDays: 0,
@@ -14,27 +17,22 @@ export default {
       displaySeconds: 0,
     };
   },
+  mounted() {
+    this.showRemaining();
+  },
   computed: {
     seconds: () => 1000,
     minutes() {
       return this.seconds * 60;
     },
     hours() {
-      this.minutes * 60;
+      return this.minutes * 60;
     },
     days() {
       return this.hours * 24;
     },
     end() {
-      return new Date(
-        this.year,
-        this.month,
-        this.date,
-        this.hour,
-        this.minute,
-        this.second,
-        this.millisecond
-      );
+      return new moment(this.date);
     },
   },
   methods: {
@@ -42,8 +40,11 @@ export default {
 
     showRemaining() {
       const timer = setInterval(() => {
-        const now = new Date();
-        const duration = this.end.getTime() - now.getTime();
+        const duration =
+          this.end.toDate().getTime() -
+          moment()
+            .toDate()
+            .getTime();
 
         if (duration < 0) {
           clearInterval(timer);
@@ -54,14 +55,20 @@ export default {
         const hours = Math.floor(duration / this.days / this.hours);
         const minutes = Math.floor(duration / this.hours / this.minutes);
         const seconds = Math.floor(duration / this.minutes / this.seconds);
-        this.displayDays = this.formatNum(days);
-        this.displayHours = this.formatNum(hours);
-        this.displayMinutes = this.formatNum(minutes);
-        this.displaySeconds = this.formatNum(seconds);
+        this.displayDays = days;
+        this.displayHours = hours;
+        this.displayMinutes = minutes;
+        this.displaySeconds = seconds;
       }, 1000);
     },
   },
 };
 </script>
 
-<style></style>
+<style scoped>
+h1 {
+  text-align: center;
+  font-size: 24px;
+  margin: 5rem;
+}
+</style>

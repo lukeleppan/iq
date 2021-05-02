@@ -5,6 +5,8 @@ import Authentication from "../views/Authentication.vue";
 import ConfirmEmail from "../views/ConfirmEmail.vue";
 import CancelEmail from "../views/CancelEmail.vue";
 import Admin from "../views/Admin.vue";
+import Help from "../views/Help.vue";
+import Account from "../views/Account.vue";
 
 const routes = [
   {
@@ -16,7 +18,7 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The Interhouse iKhwezi Quiz!.",
+          content: "The Interhouse iKhwezi Quiz!",
         },
         {
           property: "og:description",
@@ -34,7 +36,7 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The Interhouse iKhwezi Quiz!.",
+          content: "The Interhouse iKhwezi Quiz!",
         },
         {
           property: "og:description",
@@ -52,7 +54,7 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The Interhouse iKhwezi Quiz!.",
+          content: "The Interhouse iKhwezi Quiz!",
         },
         {
           property: "og:description",
@@ -70,7 +72,7 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The Interhouse iKhwezi Quiz!.",
+          content: "The Interhouse iKhwezi Quiz!",
         },
         {
           property: "og:description",
@@ -88,7 +90,7 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The Interhouse iKhwezi Quiz!.",
+          content: "The Interhouse iKhwezi Quiz!",
         },
         {
           property: "og:description",
@@ -106,7 +108,43 @@ const routes = [
       metaTags: [
         {
           name: "description",
-          content: "The Interhouse iKhwezi Quiz!.",
+          content: "The Interhouse iKhwezi Quiz!",
+        },
+        {
+          property: "og:description",
+          content: "The Interhouse iKhwezi Quiz!",
+        },
+      ],
+    },
+  },
+  {
+    path: "/help",
+    name: "Help",
+    component: Help,
+    meta: {
+      title: "Help | iKhwezi Quiz",
+      metaTags: [
+        {
+          name: "description",
+          content: "The Interhouse iKhwezi Quiz!",
+        },
+        {
+          property: "og:description",
+          content: "The Interhouse iKhwezi Quiz!",
+        },
+      ],
+    },
+  },
+  {
+    path: "/account",
+    name: "Account",
+    component: Account,
+    meta: {
+      title: "Account | iKhwezi Quiz",
+      metaTags: [
+        {
+          name: "description",
+          content: "The Interhouse iKhwezi Quiz!",
         },
         {
           property: "og:description",

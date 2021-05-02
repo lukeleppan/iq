@@ -1,22 +1,24 @@
 <template>
   <div id="main">
-    <img class="image" :src="problem.image_url" alt="image" />
-    <div class="info">
-      <div class="title-author-wrapper">
-        <h1 class="title">
-          <span>{{ problem.title }}</span>
-          <span v-if="easy" class="easy">Easy {{ problem.type }}</span>
-          <span v-else-if="moderate" class="moderate"
-            >Moderate {{ problem.type }}
-          </span>
-          <span v-else-if="hard" class="hard">Hard {{ problem.type }}</span>
-          <span v-else-if="extreme" class="extreme"
-            >Extreme {{ problem.type }}
-          </span>
-        </h1>
-        <h3 class="author">by {{ problem.author }}</h3>
+    <div class="top-problem">
+      <img class="image" :src="problem.image_url" alt="image" />
+      <div class="info">
+        <div class="title-author-wrapper">
+          <h1 class="title">
+            <span>{{ problem.title }}</span>
+            <span v-if="easy" class="easy">Easy {{ problem.type }}</span>
+            <span v-else-if="moderate" class="moderate"
+              >Moderate {{ problem.type }}
+            </span>
+            <span v-else-if="hard" class="hard">Hard {{ problem.type }}</span>
+            <span v-else-if="extreme" class="extreme"
+              >Extreme {{ problem.type }}
+            </span>
+          </h1>
+          <h3 class="author">by {{ problem.author }}</h3>
+        </div>
+        <p class="description">{{ problem.description }}</p>
       </div>
-      <p class="description">{{ problem.description }}</p>
     </div>
     <div class="answer-wrapper">
       <Answer :points="points" @answered="answered" />
@@ -64,7 +66,8 @@ export default {
   width: 100%;
   min-width: 200px;
   max-width: 500px;
-  margin-left: 5px;
+  margin: 0px 5px;
+  justify-content: space-between;
 }
 
 .image {
@@ -145,10 +148,13 @@ export default {
   display: flex;
   justify-content: center;
 }
+.top-problem {
+  display: flex;
+  flex-direction: column;
+}
 
 @media only screen and (max-width: 850px) {
   #main {
-    margin-left: none;
     margin-bottom: 5px;
   }
 }

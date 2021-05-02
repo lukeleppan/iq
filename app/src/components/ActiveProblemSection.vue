@@ -14,11 +14,8 @@
       />
       <LeaderUsers :users="users" />
     </section>
-    <div v-else>
-      <h1 class="coming-soon-heading">Hold On...</h1>
-      <h3 class="coming-coon-subtitle">
-        A new problem will be here tomorrow at 15:00.
-      </h3>
+    <div class="count-down" v-else>
+      <CountDown :date="openDate" />
     </div>
   </div>
 </template>
@@ -29,6 +26,7 @@ import { mapGetters } from "vuex";
 import moment from "moment";
 import ProblemDisplay from "@/components/ProblemDisplay";
 import LeaderUsers from "@/components/LeaderUsers";
+import CountDown from "@/components/CountDown";
 
 export default {
   name: "ActiveProblemSection",
@@ -38,7 +36,7 @@ export default {
       problem: {},
       points: 0,
       users: [],
-      openDate: {},
+      openDate: moment(),
     };
   },
   created() {
@@ -71,7 +69,7 @@ export default {
             this.points = res.data.points;
           } else {
             this.problem = {};
-            this.openDate = res.data.active_date;
+            this.openDate = moment(res.data.active_date);
           }
           this.loading = false;
         })
@@ -85,6 +83,7 @@ export default {
   components: {
     ProblemDisplay,
     LeaderUsers,
+    CountDown,
   },
 };
 </script>
@@ -95,7 +94,7 @@ section {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 0px 10px;
+  margin: 50px 10px;
 }
 
 .loading {

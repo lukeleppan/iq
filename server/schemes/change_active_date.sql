@@ -1,1 +1,1 @@
-UPDATE problems SET active_date='2021-04-26 15:00:00' WHERE active = true;
+DELETE FROM attempts

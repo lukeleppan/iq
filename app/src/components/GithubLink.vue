@@ -17,7 +17,7 @@ export default {
 
 <style scoped>
 .fab {
-  padding: 0.8rem;
+  padding: 12px;
 }
 
 div {
