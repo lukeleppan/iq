@@ -6,6 +6,7 @@ const utils = require("../lib/utils");
 const fs = require("fs");
 const path = require("path");
 const passport = require("passport");
+const moment = require("moment");
 
 const pathToKey = path.join(__dirname, "..", "id_rsa_priv.pem");
 const PRIV_KEY = fs.readFileSync(pathToKey, "utf-8");
@@ -83,16 +84,8 @@ router.post("/login", async (req, res, next) => {
 
   if (!getUser.rows[0].verified) {
     console.log("{Auth Failed}: User not verified.");
-    const verifyToken = utils.issueVerifyJWT({ username: req.body.username })
-      .token;
-
-    try {
-      utils.sendVerifyEmail(verifyToken, req.body.username);
-    } catch (err) {
-      return res.status(501).json({ success: false, verified: false });
-    }
     return res
-      .status(201)
+      .status(200)
       .json({ success: false, verified: false, msg: "user is not verified" });
   }
 
@@ -106,7 +99,7 @@ router.post("/login", async (req, res, next) => {
       username: getUser.rows[0].username,
       displayname: getUser.rows[0].displayname,
       admin: getUser.rows[0].admin,
-      house: getUser.rows[0].displayname,
+      house: getUser.rows[0].house,
     };
 
     const token = utils.issueJWT(user);
@@ -120,6 +113,37 @@ router.post("/login", async (req, res, next) => {
       user_error: true,
       msg: "username or password incorrect",
     });
+  }
+});
+
+// Resend Email
+router.post("/resend", async (req, res, next) => {
+  const getUser = await db.query("SELECT * FROM users WHERE username = $1", [
+    req.body.username,
+  ]);
+
+  if (getUser.error) {
+    console.error("{server error}: during resending");
+    return res.status(500).json({ success: false });
+  }
+
+  if (getUser.rowCount === 0) {
+    console.log("{Resend Failed}: User Does Not Exist");
+    return res.status(200).json({
+      success: false,
+    });
+  }
+
+  if (!getUser.rows[0].verified) {
+    const verifyToken = utils.issueVerifyJWT({ username: req.body.username })
+      .token;
+
+    try {
+      utils.sendVerifyEmail(verifyToken, req.body.username);
+    } catch (err) {
+      return res.status(501).json({ success: false });
+    }
+    return res.status(201).json({ success: true });
   }
 });
 
@@ -228,11 +252,12 @@ router.post("/cancel/:token", async (req, res) => {
 //---------------------------------//
 
 //---- USER PROBLEM MANAGEMENT ----//
+// ANSWER
 router.post(
   "/answer",
   passport.authenticate("jwt", { session: false }),
   async (req, res) => {
-    const { sub, house } = req.body;
+    const { sub, house } = req.user;
 
     const checkAnswer = await db.query(
       "SELECT * FROM problems WHERE active = true;"
@@ -242,20 +267,57 @@ router.post(
       return res.status(500).json({ success: false });
     }
 
-    if (checkAnswer.rowCount == 0) {
+    if (checkAnswer.rowCount === 0) {
       return res.status(401).json({ success: false });
     }
 
+    const currentActiveProblems = await db.query(
+      "SELECT problem_id FROM problems WHERE active = true;",
+      []
+    );
+
+    if (currentActiveProblems.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    if (currentActiveProblems.rowCount == 0) {
+      return res.status(200).json({ success: true, no_active: true });
+    }
+
+    const checkAnswered = await db.query(
+      "SELECT COUNT(*) FROM attempts WHERE username = $1 AND problem_id = $2 AND \
+      (attempt_date + interval '30 minutes') > NOW();",
+      [sub, currentActiveProblems.rows[0].problem_id]
+    );
+
+    if (checkAnswered.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    if (checkAnswered.rows[0].count > 0) {
+      return res.status(200).json({ success: true, correct: false });
+    }
+
     if (checkAnswer.rows[0].answer == req.body.answer) {
+      const successAttemptsQuery = await db.query(
+        "SELECT COUNT(1) FROM attempts WHERE problem_id = $1 AND success = true;",
+        [currentActiveProblems.rows[0].problem_id]
+      );
+
+      if (successAttemptsQuery.error) {
+        return res.status(500).json({ success: false });
+      }
+
       const attempt = await db.query(
         "INSERT INTO attempts\
-      (problem_id, username, points, house, attempt_date, success) VALUES ($1, $2, $3, $4, $5, $6);",
+        (problem_id, username, points, house, attempt_date, success) VALUES ($1, $2, $3, $4, $5, $6);",
         [
           checkAnswer.rows[0].problem_id,
           sub,
           utils.calcScore(
             checkAnswer.rows[0].active_date,
-            checkAnswer.rows[0].difficulty
+            checkAnswer.rows[0].difficulty,
+            successAttemptsQuery.rows[0].count
           ),
           house,
           moment().format(),
@@ -265,6 +327,18 @@ router.post(
 
       if (attempt.error) {
         return res.status(500).json({ success: false });
+      }
+
+      if (successAttemptsQuery.rows[0].count >= 9) {
+        const problem = await db.query(
+          "UPDATE problems\
+          SET closed = true\
+          WHERE problem_id = $1",
+          [checkAnswer.rows[0].problem_id]
+        );
+        if (problem.error) {
+          return res.status(500).json({ success: false });
+        }
       }
 
       return res.status(201).json({ success: true, correct: true });
@@ -281,6 +355,62 @@ router.post(
     }
 
     return res.status(200).json({ success: true, correct: false });
+  }
+);
+
+// ANSWERABLE
+router.get(
+  "/answerable",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { sub, house } = req.user;
+    const currentActiveProblems = await db.query(
+      "SELECT problem_id FROM problems WHERE active = true;",
+      []
+    );
+
+    if (currentActiveProblems.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    const checkAnswered = await db.query(
+      "SELECT COUNT(0) FROM attempts WHERE username = $1 AND problem_id = $2 AND success = true;",
+      [sub, currentActiveProblems.rows[0].problem_id]
+    );
+
+    if (checkAnswered.error) {
+      return res.status(500).json({ success: false });
+    }
+
+    if (checkAnswered.rows[0].count == 0) {
+      const checkCooldown = await db.query(
+        "SELECT attempt_date FROM attempts WHERE username = $1 AND problem_id = $2 ORDER BY attempt_date DESC",
+        [sub, currentActiveProblems.rows[0].problem_id]
+      );
+
+      if (checkCooldown.error) {
+        return res.status(500).json({ success: false });
+      }
+
+      if (
+        checkCooldown.rows.length > 0 &&
+        moment().isBefore(
+          moment(checkCooldown.rows[0].attempt_date).add(30, "minutes")
+        )
+      ) {
+        return res.status(200).json({
+          success: true,
+          answerable: false,
+          cooldown: moment(checkCooldown.rows[0].attempt_date)
+            .add(30, "minutes")
+            .format(),
+        });
+      }
+
+      return res.status(200).json({ success: true, answerable: true });
+    }
+
+    res.status(200).json({ success: true, answerable: false });
   }
 );
 

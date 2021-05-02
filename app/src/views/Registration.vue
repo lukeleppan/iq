@@ -55,7 +55,10 @@
             <input type="submit" value="Register" class="btn register-btn" />
             <div>
               <p id="error" v-if="error">{{ errorText }}</p>
-              <p id="success" v-if="success">Successfully Registered</p>
+              <p id="success" v-if="success">
+                Successfully Registered. Check your school email to verify you
+                account.
+              </p>
             </div>
           </form>
         </div>
@@ -70,6 +73,20 @@ import AuthResHeader from "@/components/AuthResHeader";
 
 export default {
   name: "Registration",
+  metaInfo: {
+    title: "Create an account | iKhwezi Quiz",
+    htmlAttrs: {
+      lang: "en-US",
+    },
+    meta: [
+      { charset: "utf-8" },
+      {
+        name: "description",
+        content: "The Interhouse iKhwezi Quiz!",
+      },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+    ],
+  },
   data() {
     return {
       displayName: "",
@@ -254,6 +271,28 @@ input.tab + label:hover {
   border-color: rgb(0, 0, 0);
   background-color: rgb(0, 0, 0);
   color: white;
+}
+
+#error {
+  border: 2px solid rgb(194, 0, 0);
+  border-radius: 1rem;
+  background-color: rgb(255, 69, 69);
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  padding: 1rem;
+  margin: 1rem 0rem;
+}
+
+#success {
+  border: 2px solid green;
+  border-radius: 1rem;
+  background-color: rgb(34, 168, 0);
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  padding: 1rem;
+  margin: 1rem 0rem;
 }
 
 @media only screen and (max-width: 385px) {

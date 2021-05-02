@@ -3,12 +3,22 @@
     {
       "previewLimit": 50,
       "server": "localhost",
+      "port": 5431,
+      "driver": "PostgreSQL",
+      "name": "iqdb",
+      "database": "iqdb",
+      "username": "postgres",
+      "password": "1905"
+    },
+    {
+      "previewLimit": 50,
+      "server": "localhost",
       "port": 5432,
       "driver": "PostgreSQL",
-      "name": "lgdb",
-      "database": "lgdb",
+      "name": "iq",
+      "database": "iqdb",
       "username": "postgres",
-      "password": ""
+      "password": "Lep190525"
     }
   ],
   "editor.defaultFormatter": "esbenp.prettier-vscode",

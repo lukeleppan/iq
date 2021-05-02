@@ -1,7 +1,9 @@
+-- @conn iq
 DROP TABLE attempts;
 DROP TABLE problems;
 DROP TABLE users;
 DROP TABLE houses;
+
 
 CREATE TABLE "houses" (
   house_id SERIAL PRIMARY KEY,
@@ -30,7 +32,7 @@ CREATE TABLE "problems" (
   answer TEXT NOT NULL,
   active BOOLEAN,
   active_date TIMESTAMP,
-  solved BOOLEAN NOT NULL
+  closed BOOLEAN NOT NULL
 );
 
 CREATE TABLE "attempts" (

@@ -33,10 +33,10 @@
         </div>
         <div id="general-section">
           <p class="drop-title">GENERAL</p>
-          <div class="dropdown-item">
+          <router-link to="/help" class="dropdown-item">
             <i class="fas fa-question-circle dropdown-icon"></i>
             <p class="dropdown-text">Help</p>
-          </div>
+          </router-link>
         </div>
         <div id="user-section">
           <p class="drop-title">USER</p>
@@ -93,7 +93,7 @@ export default {
     logout() {
       logout();
       this.$store.commit("logout");
-      this.$router.replace("/");
+      this.$router.go();
     },
   },
 };

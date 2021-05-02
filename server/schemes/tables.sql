@@ -1,9 +1,14 @@
+-- @block
+-- @conn iqdb
 CREATE TABLE "houses" (
   house_id SERIAL PRIMARY KEY,
   house_name TEXT NOT NULL,
   colour TEXT
 );
 
+
+-- @block
+-- @conn iqdb
 CREATE TABLE "users" (
   username VARCHAR(20) PRIMARY KEY NOT NULL,
   hash TEXT NOT NULL,
@@ -14,6 +19,8 @@ CREATE TABLE "users" (
   admin BOOLEAN NOT NULL
 );
 
+-- @block
+-- @conn iqdb
 CREATE TABLE "problems" (
   problem_id SERIAL PRIMARY KEY,
   title VARCHAR(255) NOT NULL,
@@ -25,9 +32,11 @@ CREATE TABLE "problems" (
   answer TEXT NOT NULL,
   active BOOLEAN,
   active_date TIMESTAMP,
-  solved BOOLEAN NOT NULL
+  closed BOOLEAN NOT NULL
 );
 
+-- @block
+-- @conn iqdb
 CREATE TABLE "attempts" (
   attempt_id SERIAL PRIMARY KEY,
   problem_id BIGINT REFERENCES problems(problem_id),
