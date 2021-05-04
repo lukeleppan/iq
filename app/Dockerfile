@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-RUN npm install -g http-server
+RUN npm install -g serve
 
 WORKDIR /app
 
@@ -10,7 +10,9 @@ RUN npm install
 
 COPY . .
 
+COPY ./serve.json ./dist
+
 RUN npm run build
 
-CMD [ "http-server", "dist" ]
+CMD [ "serve", "dist" ]
 
