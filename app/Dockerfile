@@ -14,5 +14,5 @@ COPY ./serve.json ./dist
 
 RUN npm run build
 
-CMD [ "serve", "dist" ]
+CMD [ "serve", "--listen 8080", "dist" ]
 
