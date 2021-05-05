@@ -80,7 +80,7 @@ router.get("/problem/active", async (req, res) => {
 
   const users = await db.query(
     "SELECT users.username, users.displayname, users.house, attempts.points FROM attempts INNER JOIN users\
-    ON users.username = attempts.username WHERE attempts.problem_id = $1 AND attempts.success = true;",
+    ON users.username = attempts.username WHERE attempts.problem_id = $1 AND attempts.success = true ORDER BY attempts.attempt_date DESC;",
     [currentActiveProblems.rows[0].problem_id]
   );
 
