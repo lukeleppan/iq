@@ -35,8 +35,8 @@ const transporter = nodemailer.createTransport({
  * @param {*} username - username
  */
 function sendVerifyEmail(token, username) {
-  const verifyLink = CLIENT_URL + "/confirm/" + token;
-  const cancelLink = CLIENT_URL + "/cancel/" + token;
+  const verifyLink = CLIENT_URL + "/#/confirm/" + token;
+  const cancelLink = CLIENT_URL + "/#/cancel/" + token;
   return transporter.sendMail(
     {
       from: "tmctutors@gmail.com",
