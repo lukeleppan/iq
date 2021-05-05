@@ -3,7 +3,7 @@
     <div class="trophy">
       <i class="fas fa-trophy fa-5x"></i>
     </div>
-    <h1 class="header">Leaderboard</h1>
+    <h1 class="header">Problem Leaderboard</h1>
     <p class="no-users" v-if="hasUsers">
       No one has solved this problem yet. Be the First!
     </p>
