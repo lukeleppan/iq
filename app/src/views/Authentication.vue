@@ -13,6 +13,7 @@
               id="username"
               name="username"
             />
+            <h6 class="tip-text">This is your school username</h6>
             <label for="password">Password</label>
             <input
               v-model="password"
@@ -191,13 +192,20 @@ label {
 }
 
 input#verify-username,
-input#username,
 input#password {
   border: 1px solid black;
   border-radius: 0.3rem;
   padding: 0.5rem 1rem;
   margin-top: 0.2rem;
   margin-bottom: 1rem;
+}
+
+input#username {
+  border: 1px solid black;
+  border-radius: 0.3rem;
+  padding: 0.5rem 1rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0rem;
 }
 
 input#verify-username:focus,
@@ -246,5 +254,10 @@ input#password:hover {
   color: white;
   padding: 1rem;
   margin: 1rem 0rem;
+}
+
+.tip-text {
+  margin-top: 0.2rem;
+  margin-bottom: 1rem;
 }
 </style>
