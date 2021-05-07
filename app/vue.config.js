@@ -3,5 +3,7 @@ module.exports = {
     name: "iKhwezi Quiz",
     themeColor: "#FFFFFF",
     msTileColor: "#000000",
+    appleMobileWebAppCapable: "yes",
+    workboxPluginMode: "GenerateSW",
   },
 };

@@ -2,10 +2,7 @@
 
 import { register } from "register-service-worker";
 
-if (
-  process.env.NODE_ENV === "production" ||
-  process.env.NODE_ENV === "development"
-) {
+if (process.env.NODE_ENV === "production") {
   register(`${process.env.BASE_URL}service-worker.js`, {
     ready() {
       console.log(
@@ -22,8 +19,11 @@ if (
     updatefound() {
       console.log("New content is downloading.");
     },
-    updated() {
+    updated(registration) {
       console.log("New content is available; please refresh.");
+      document.dispatchEvent(
+        new CustomEvent("swUpdate", { detail: registration })
+      );
     },
     offline() {
       console.log(
