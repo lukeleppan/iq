@@ -6,8 +6,9 @@
         <div class="register-block">
           <h3 class="register-title">Create An Account</h3>
           <form @submit.prevent="onSubmit">
-            <label for="dname">Display Name</label>
+            <label for="dname">Full Name</label>
             <input v-model="displayName" type="text" id="dname" name="dname" />
+            <h6 class="tip-text">This name can be seen by the public</h6>
             <label for="house">Choose your house</label>
             <div class="house-wrapper">
               <input
@@ -45,6 +46,9 @@
               id="username"
               name="username"
             />
+            <h6 class="tip-text">
+              Use your school username. If you don't, you won't get an email.
+            </h6>
             <label for="password">Password</label>
             <input
               v-model="password"
@@ -90,7 +94,7 @@ export default {
   data() {
     return {
       displayName: "",
-      house: 1,
+      house: 0,
       username: "",
       password: "",
 
@@ -108,7 +112,13 @@ export default {
 
       if (this.displayName === "") {
         this.error = true;
-        this.errorText = "Please Enter display name";
+        this.errorText = "Please Enter your Full Name";
+        return;
+      }
+
+      if (this.house === 0) {
+        this.error = true;
+        this.errorText = "Please Select your House";
         return;
       }
 
@@ -120,7 +130,7 @@ export default {
 
       if (this.password === "") {
         this.error = true;
-        this.errorText = "Please Enter password";
+        this.errorText = "Please Enter a Password";
         return;
       }
 
@@ -184,14 +194,21 @@ label {
   font-weight: bold;
 }
 
-input#dname,
-input#username,
 input#password {
   border: 1px solid black;
   border-radius: 0.3rem;
   padding: 0.5rem 1rem;
   margin-top: 0.2rem;
   margin-bottom: 1rem;
+}
+
+input#dname,
+input#username {
+  border: 1px solid black;
+  border-radius: 0.3rem;
+  padding: 0.5rem 1rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0rem;
 }
 
 input#dname:focus,
@@ -293,6 +310,11 @@ input.tab + label:hover {
   color: white;
   padding: 1rem;
   margin: 1rem 0rem;
+}
+
+.tip-text {
+  margin-top: 0.2rem;
+  margin-bottom: 1rem;
 }
 
 @media only screen and (max-width: 385px) {

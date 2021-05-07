@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="ikhwezi-title">iKhwezi</h1>
+    <h1 class="ikhwezi-title" :style="{ color: color }">iKhwezi</h1>
     <h1 class="quiz-title">Quiz</h1>
   </div>
 </template>
@@ -9,8 +9,52 @@
 import { mapGetters } from "vuex";
 export default {
   name: "Hero",
+  data() {
+    return {
+      color: "rgb(70, 70, 255)",
+    };
+  },
   computed: {
     ...mapGetters(["jwt", "jwtData"]),
+  },
+  mounted() {
+    this.setColor();
+  },
+  methods: {
+    setColor() {
+      if (this.jwt) {
+        switch (this.jwtData.house) {
+          case 1:
+            this.color = "rgb(255, 50, 50)";
+            break;
+          case 2:
+            this.color = "rgb(70, 70, 255)";
+            break;
+          case 3:
+            this.color = "rgb(0, 0, 0)";
+            break;
+
+          default:
+            break;
+        }
+      } else {
+        const randInt = Math.floor(Math.random() * 3);
+        switch (randInt) {
+          case 0:
+            this.color = "rgb(255, 50, 50)";
+            break;
+          case 1:
+            this.color = "rgb(70, 70, 255)";
+            break;
+          case 2:
+            this.color = "rgb(0, 0, 0)";
+            break;
+
+          default:
+            break;
+        }
+      }
+    },
   },
 };
 </script>
