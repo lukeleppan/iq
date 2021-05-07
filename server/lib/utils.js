@@ -164,7 +164,7 @@ function calcScore(activeDate, difficulty, successes) {
       if (successes > 9) {
         return 0;
       }
-      return 1;
+      return 2;
 
     case 1:
       if (successes == 0) {
@@ -179,7 +179,7 @@ function calcScore(activeDate, difficulty, successes) {
       if (successes > 9) {
         return 0;
       }
-      return 2;
+      return 3;
 
     case 2:
       if (successes == 0) {
@@ -194,7 +194,7 @@ function calcScore(activeDate, difficulty, successes) {
       if (successes > 9) {
         return 0;
       }
-      return 3;
+      return 5;
 
     case 3:
       if (successes == 0) {
@@ -209,7 +209,7 @@ function calcScore(activeDate, difficulty, successes) {
       if (successes > 9) {
         return 0;
       }
-      return 5;
+      return 10;
   }
 }
 
