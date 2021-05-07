@@ -86,7 +86,7 @@ export default {
           }
         })
         .catch((error) => {
-          console.log(error);
+          error;
         });
     },
     onSubmit() {
@@ -113,7 +113,7 @@ export default {
           this.$emit("answered");
         })
         .catch((error) => {
-          console.log(error);
+          error;
         });
     },
   },
