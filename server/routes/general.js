@@ -45,7 +45,7 @@ router.get("/problem/solved", async (req, res) => {
 router.get("/problem/active", async (req, res) => {
   const currentActiveProblems = await db.query(
     "SELECT problem_id, title, description, type, difficulty, image_url, author, active_date\
-     FROM problems WHERE active = true;",
+     FROM problems WHERE active = true AND closed = false;",
     []
   );
 

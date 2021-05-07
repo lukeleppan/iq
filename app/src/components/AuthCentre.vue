@@ -40,10 +40,10 @@
         </div>
         <div id="user-section">
           <p class="drop-title">USER</p>
-          <div class="dropdown-item">
+          <router-link to="/account" class="dropdown-item">
             <i class="fas fa-user-circle dropdown-icon"></i>
             <p class="dropdown-text">Account</p>
-          </div>
+          </router-link>
           <div class="dropdown-item" @click="logout">
             <i class="fas fa-sign-out-alt dropdown-icon"></i>
             <p class="dropdown-text">Log Out</p>
