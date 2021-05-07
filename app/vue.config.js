@@ -5,5 +5,8 @@ module.exports = {
     msTileColor: "#000000",
     appleMobileWebAppCapable: "yes",
     workboxPluginMode: "GenerateSW",
+    workboxOptions: {
+      skipWaiting: true,
+    },
   },
 };
