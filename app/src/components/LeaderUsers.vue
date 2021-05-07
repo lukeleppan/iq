@@ -56,7 +56,7 @@
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[0].points }}</span>
+            <span class="points">{{ users[2].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
@@ -65,7 +65,7 @@
       <div v-if="users.length > 3">
         <li>
           <div class="left-wrapper">
-            <span class="number">4</span>
+            <span class="number">4th</span>
             <div class="name-wrapper">
               <span class="username-text">{{ users[3].displayname }}</span>
               <div class="dalberg" v-if="users[3].house == 1">Dalberg</div>
@@ -83,7 +83,7 @@
       <div v-if="users.length > 4">
         <li>
           <div class="left-wrapper">
-            <span class="number">5</span>
+            <span class="number">5th</span>
             <div class="name-wrapper">
               <span class="username-text">{{ users[4].displayname }}</span>
               <div class="dalberg" v-if="users[4].house == 1">Dalberg</div>
@@ -101,7 +101,7 @@
       <div v-if="users.length > 5">
         <li>
           <div class="left-wrapper">
-            <span class="number">6</span>
+            <span class="number">6th</span>
             <div class="name-wrapper">
               <span class="username-text">{{ users[5].displayname }}</span>
               <div class="dalberg" v-if="users[5].house == 1">Dalberg</div>
@@ -119,7 +119,7 @@
       <div v-if="users.length > 6">
         <li>
           <div class="left-wrapper">
-            <span class="number">7</span>
+            <span class="number">7th</span>
             <div class="name-wrapper">
               <span class="username-text">{{ users[6].displayname }}</span>
               <div class="dalberg" v-if="users[6].house == 1">Dalberg</div>
@@ -137,7 +137,7 @@
       <div v-if="users.length > 7">
         <li>
           <div class="left-wrapper">
-            <span class="number">8</span>
+            <span class="number">8th</span>
             <div class="name-wrapper">
               <span class="username-text">{{ users[7].displayname }}</span>
               <div class="dalberg" v-if="users[7].house == 1">Dalberg</div>
@@ -155,7 +155,7 @@
       <div v-if="users.length > 8">
         <li>
           <div class="left-wrapper">
-            <span class="number">9</span>
+            <span class="number">9th</span>
             <div class="name-wrapper">
               <span class="username-text">{{ users[8].displayname }}</span>
               <div class="dalberg" v-if="users[8].house == 1">Dalberg</div>
@@ -173,7 +173,7 @@
       <div v-if="users.length > 9">
         <li>
           <div class="left-wrapper">
-            <span class="number">10</span>
+            <span class="number">10th</span>
             <div class="name-wrapper">
               <span class="username-text">{{ users[9].displayname }}</span>
               <div class="dalberg" v-if="users[9].house == 1">Dalberg</div>
