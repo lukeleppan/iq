@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     getHouseLeaderboard() {
-      this.loading = false;
+      this.loading = true;
       const { VUE_APP_API_URL } = process.env;
       axios({
         method: "get",
@@ -44,7 +44,6 @@ export default {
       })
         .then((res) => {
           this.points = res.data.houses.map((house) => house.points);
-
           this.loading = false;
         })
         .catch((error) => {
