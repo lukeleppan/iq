@@ -95,7 +95,7 @@ export default {
 .chart-wrapper {
   display: flex;
   justify-content: center;
-  margin: 10px 30px;
+  margin: 10px 16px;
   /* max-height: 500px;
   height: 500px; */
 }
