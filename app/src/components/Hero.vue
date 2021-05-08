@@ -23,7 +23,7 @@ export default {
   methods: {
     setColor() {
       if (this.jwt) {
-        switch (this.jwtData.house) {
+        switch (parseInt(this.jwtData.house)) {
           case 1:
             this.color = "rgb(255, 50, 50)";
             break;
