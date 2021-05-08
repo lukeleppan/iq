@@ -23,7 +23,7 @@ export default {
     const data = {
       type: "bar",
       data: {
-        labels: ["Dalburg", "Savory", "Hurley"],
+        labels: ["Dalberg", "Savory", "Hurley"],
         datasets: [
           {
             label: "Points",
