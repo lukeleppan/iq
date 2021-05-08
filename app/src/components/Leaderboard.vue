@@ -1,6 +1,6 @@
 <template>
   <div class="leaderboard-main">
-    <h1>Competition Leaderboard</h1>
+    <h1 class="cl-title">Competition Leaderboard</h1>
     <div class="wrapper">
       <div class="loading" v-if="loading">
         <div class="lds-ripple">
@@ -8,8 +8,8 @@
           <div></div>
         </div>
       </div>
-      <div class="chart" v-else-if="rows.length > 0">
-        <Chart rows="rows" />
+      <div v-else-if="points.length > 0">
+        <Chart class="chart" :points="points" :chartOptions="chartOptions" />
       </div>
     </div>
   </div>
@@ -23,7 +23,10 @@ export default {
   data() {
     return {
       loading: false,
-      rows: [],
+      points: [],
+      chartOptions: {
+        responsive: true,
+      },
     };
   },
   components: { Chart },
@@ -40,7 +43,8 @@ export default {
         url: "/api/leaderboard/houses",
       })
         .then((res) => {
-          this.rows = res.data.rows;
+          this.points = res.data.houses.map((house) => house.points);
+
           this.loading = false;
         })
         .catch((error) => {
@@ -54,6 +58,23 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
+
+.leaderboard-main {
+  margin-top: 50px;
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+}
+.cl-title {
+  margin-left: 50px;
+  margin-right: 50px;
+  text-align: center;
+  font-family: Cabin;
+  font-weight: bold;
+  font-size: 48px;
+}
+
 .loading {
   display: flex;
   justify-content: center;
