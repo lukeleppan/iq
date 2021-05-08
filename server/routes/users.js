@@ -249,6 +249,139 @@ router.post("/cancel/:token", async (req, res) => {
     return res.status(401).json({ success: false });
   }
 });
+
+router.post(
+  "/change/details",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { displayName, username, house, password } = req.body;
+    const getUser = await db.query("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
+
+    if (getUser.error) {
+      console.error("{server error}: during user detail change");
+      res
+        .status(500)
+        .json({ success: false, user_error: false, msg: "server error" });
+      return next(getUser.error);
+    }
+
+    if (getUser.rowCount === 0) {
+      console.log("{Auth Failed}: User Does Not Exist");
+      return res.status(400).json({
+        success: false,
+        user_error: true,
+        msg: "username or password incorrect",
+      });
+    }
+
+    if (!getUser.rows[0].verified) {
+      console.log("{Auth Failed}: User not verified.");
+      return res.status(400).json({
+        success: false,
+        verified: false,
+        msg: "user is not verified",
+      });
+    }
+
+    const salt = getUser.rows[0].salt;
+    const hash = getUser.rows[0].hash;
+
+    const isValid = utils.validPassword(password, hash, salt);
+
+    if (isValid) {
+      const updateUser = await db.query(
+        "UPDATE users SET displayname = $1, house = $2 WHERE username = $3;",
+        [displayName, house, username]
+      );
+
+      if (updateUser.error) {
+        res
+          .status(500)
+          .json({ success: false, user_error: false, msg: "server error" });
+        return next(getUser.error);
+      }
+
+      return res.status(200).json({ success: true });
+    }
+
+    return res.status(400).json({
+      success: false,
+      user_error: true,
+      msg: "username or password incorrect",
+    });
+  }
+);
+
+router.post(
+  "/change/password",
+  passport.authenticate("jwt", { session: false }),
+  async (req, res) => {
+    const { username, oldPassword, newPassword } = req.body;
+    const getUser = await db.query("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
+
+    if (getUser.error) {
+      console.error("{server error}: during user detail change");
+      res
+        .status(500)
+        .json({ success: false, user_error: false, msg: "server error" });
+      return next(getUser.error);
+    }
+
+    if (getUser.rowCount === 0) {
+      console.log("{Auth Failed}: User Does Not Exist");
+      return res.status(400).json({
+        success: false,
+        user_error: true,
+        msg: "username or password incorrect",
+      });
+    }
+
+    if (!getUser.rows[0].verified) {
+      console.log("{Auth Failed}: User not verified.");
+      return res.status(400).json({
+        success: false,
+        verified: false,
+        msg: "user is not verified",
+      });
+    }
+
+    const salt = getUser.rows[0].salt;
+    const hash = getUser.rows[0].hash;
+
+    const isValid = utils.validPassword(oldPassword, hash, salt);
+
+    if (isValid) {
+      const saltHash = utils.genPassword(newPassword);
+
+      const salt = saltHash.salt;
+      const hash = saltHash.hash;
+
+      const updateUser = await db.query(
+        "UPDATE users SET hash = $1, salt = $2 WHERE username = $3;",
+        [hash, salt, username]
+      );
+
+      if (updateUser.error) {
+        res
+          .status(500)
+          .json({ success: false, user_error: false, msg: "server error" });
+        return next(getUser.error);
+      }
+
+      return res.status(200).json({ success: true });
+    }
+
+    return res.status(400).json({
+      success: false,
+      user_error: true,
+      msg: "username or password incorrect",
+    });
+  }
+);
 //---------------------------------//
 
 //---- USER PROBLEM MANAGEMENT ----//

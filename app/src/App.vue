@@ -6,6 +6,20 @@
 import { mapActions } from "vuex";
 
 export default {
+  metaInfo: {
+    title: "iKhwezi Quiz",
+    htmlAttrs: {
+      lang: "en-US",
+    },
+    meta: [
+      { charset: "utf-8" },
+      {
+        name: "description",
+        content: "The Interhouse iKhwezi Quiz!",
+      },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+    ],
+  },
   methods: {
     ...mapActions(["fetchJWT"]),
   },
