@@ -109,6 +109,39 @@ router.get("/leaderboard/houses", async (req, res) => {
   }
 
   let rows = getHouseData.rows;
+  let savory = false;
+  let dalberg = false;
+  let hurley = false;
+
+  rows.forEach((house) => {
+    if (house.house === "1") {
+      dalberg = true;
+    }
+
+    if (house.house === "2") {
+      savory = true;
+    }
+
+    if (house.house === "3") {
+      hurley = true;
+    }
+  });
+
+  if (!dalberg) {
+    rows.push({ house: "1", house_name: "Dalberg", points: "0" });
+  }
+
+  if (!savory) {
+    rows.push({ house: "2", house_name: "Savory", points: "0" });
+  }
+
+  if (!hurley) {
+    rows.push({ house: "3", house_name: "Hurley", points: "0" });
+  }
+
+  rows.sort((a, b) => {
+    return "" + parseInt(a.house) - parseInt(b.house);
+  });
 
   return res.status(200).json({ success: true, houses: rows });
 });
