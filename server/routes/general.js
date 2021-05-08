@@ -96,6 +96,56 @@ router.get("/problem/active", async (req, res) => {
   });
 });
 
-//-----------------//
+//---------------------//
+
+//---- Leaderboard ----//
+router.get("/leaderboard/houses", async (req, res) => {
+  const getHouseData = await db.query(
+    "SELECT attempts.house, houses.house_name, SUM(attempts.points) AS points FROM attempts, houses WHERE house = house_id GROUP BY attempts.house, houses.house_name;"
+  );
+
+  if (getHouseData.error) {
+    return res.status(500).json({ success: false });
+  }
+
+  let rows = getHouseData.rows;
+  let savory = false;
+  let dalberg = false;
+  let hurley = false;
+
+  rows.forEach((house) => {
+    if ((house.house = 1)) {
+      dalberg = true;
+    }
+
+    if ((house.house = 2)) {
+      savory = true;
+    }
+
+    if ((house.house = 3)) {
+      hurley = true;
+    }
+  });
+
+  if (!dalberg) {
+    rows.append({ house: 1, house_name: "Dalberg", points: 0 });
+  }
+
+  if (!savory) {
+    rows.append({ house: 2, house_name: "Savory", points: 0 });
+  }
+
+  if (!hurley) {
+    rows.append({ house: 3, house_name: "Hurley", points: 0 });
+  }
+
+  rows.sort((a, b) => {
+    a.house - b.house;
+  });
+
+  return res.status(200).json({ success: true, houses: rows });
+});
+
+router.get("/leaderboard/users");
 
 module.exports = router;

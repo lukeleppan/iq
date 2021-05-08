@@ -320,7 +320,7 @@ i {
   }
 }
 
-@media only screen and (max-width: 850px) {
+@media only screen and (max-width: 939px) {
   #main {
     max-width: 500px;
     margin-top: 5px;
