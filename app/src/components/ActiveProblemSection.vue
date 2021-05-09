@@ -1,84 +1,31 @@
 <template>
   <div class="main">
-    <div class="loading" v-if="loading">
+    <div class="loading" v-if="loadingProblem">
       <div class="lds-ripple">
         <div></div>
         <div></div>
       </div>
     </div>
     <section v-else-if="hasData">
-      <ProblemDisplay
-        :problem="problem"
-        :points="points"
-        @answered="getProblem"
-      />
-      <LeaderUsers :users="users" />
+      <ProblemDisplay />
+      <LeaderUsers />
     </section>
     <div class="count-down" v-else>
-      <CountDown :date="openDate" />
+      <CountDown />
     </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import { mapGetters } from "vuex";
-import moment from "moment";
 import ProblemDisplay from "@/components/ProblemDisplay";
 import LeaderUsers from "@/components/LeaderUsers";
 import CountDown from "@/components/CountDown";
 
 export default {
   name: "ActiveProblemSection",
-  data() {
-    return {
-      loading: false,
-      problem: {},
-      points: 0,
-      users: [],
-      openDate: moment(),
-    };
-  },
-  created() {
-    this.getProblem();
-  },
   computed: {
-    ...mapGetters(["jwt"]),
-    hasData() {
-      return this.problem.problem_id;
-    },
-  },
-  methods: {
-    getProblem() {
-      this.loading = true;
-      const { VUE_APP_API_URL } = process.env;
-      axios({
-        method: "get",
-        baseURL: VUE_APP_API_URL,
-        url: "/api/problem/active",
-      })
-        .then((res) => {
-          if (res.data.no_active) {
-            this.problem = {};
-            this.openDate = moment()
-              .add(1, "day")
-              .set({ hour: 15, minute: 0, second: 0 });
-          } else if (res.data.problem) {
-            this.problem = res.data.problem;
-            this.users = res.data.users;
-            this.points = res.data.points;
-          } else {
-            this.problem = {};
-            this.openDate = moment(res.data.active_date);
-          }
-          this.loading = false;
-        })
-        .catch((error) => {
-          if (error) {
-            this.$router.replace("/");
-          }
-        });
-    },
+    ...mapGetters(["jwt", "hasData", "loadingProblem"]),
   },
   components: {
     ProblemDisplay,

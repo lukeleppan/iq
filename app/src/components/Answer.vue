@@ -1,11 +1,13 @@
 <template>
   <div id="main-answer">
-    <div class="cooldown-wrapper" v-if="onCooldown">
+    <div class="cooldown-wrapper" v-if="cooldown">
       <p class="points-wrapper">
-        Points Available: <span class="points">{{ points }}</span>
+        Points Available: <span class="points">{{ availablePoints }}</span>
       </p>
       <div class="cooldown">
-        <span class="cooldown-text">You can answer again {{ cooldown }}</span>
+        <span class="cooldown-text"
+          >You can answer again {{ cooldownEnd }}</span
+        >
       </div>
     </div>
     <div class="correct-wrapper" v-else-if="correct">
@@ -17,10 +19,10 @@
     <div class="answer" v-else-if="jwt">
       <form @submit.prevent="onSubmit">
         <p class="points-wrapper">
-          Points Available: <span class="points">{{ points }}</span>
+          Points Available: <span class="points">{{ availablePoints }}</span>
         </p>
         <input
-          v-model="answer"
+          v-model="answerText"
           type="answer"
           id="answer"
           name="answer"
@@ -32,7 +34,7 @@
 
     <div class="no-auth" v-else>
       <p class="points-wrapper">
-        Points Available: <span class="points">{{ points }}</span>
+        Points Available: <span class="points">{{ availablePoints }}</span>
       </p>
       <div id="ss-buttons">
         <router-link to="/authentication" class="btn auth">Sign In</router-link>
@@ -45,80 +47,29 @@
 </template>
 
 <script>
-import moment from "moment";
 import { mapGetters } from "vuex";
-import axios from "axios";
 
 export default {
   name: "Answer",
-  props: ["points"],
-  emits: ["answered"],
   data() {
     return {
-      onCooldown: false,
-      answer: "",
-      cooldown: moment(),
-      correct: false,
+      answerText: "",
     };
   },
   computed: {
-    ...mapGetters(["jwt"]),
+    ...mapGetters([
+      "jwt",
+      "availablePoints",
+      "answerable",
+      "cooldown",
+      "cooldownEnd",
+      "correct",
+    ]),
   },
   methods: {
-    checkAnswerable() {
-      const { VUE_APP_API_URL } = process.env;
-      axios({
-        method: "get",
-        url: VUE_APP_API_URL + "/api/users/answerable",
-        headers: { Authorization: this.jwt },
-      })
-        .then((res) => {
-          if (res.data.answerable) {
-            this.correct = false;
-            this.onCooldown = false;
-          } else if (res.data.cooldown) {
-            this.correct = false;
-            this.onCooldown = true;
-            this.cooldown = moment(res.data.cooldown).fromNow();
-          } else {
-            this.onCooldown = false;
-            this.correct = true;
-          }
-        })
-        .catch((error) => {
-          error;
-        });
-    },
     onSubmit() {
-      const { VUE_APP_API_URL } = process.env;
-      this.error = false;
-      this.errorText = "";
-      if (this.answer === "") {
-        this.error = true;
-        this.errorText = "Please Fill in Everything";
-        return;
-      }
-      axios({
-        method: "post",
-        baseURL: VUE_APP_API_URL,
-        url: "/api/users/answer",
-        headers: { Authorization: this.jwt },
-        data: { answer: this.answer },
-      })
-        .then((res) => {
-          if (res.data.correct) {
-            this.$emit("answered");
-            this.$router.go();
-          }
-          this.$emit("answered");
-        })
-        .catch((error) => {
-          error;
-        });
+      this.$store.dispatch("answer", { vm: this, answer: this.answerText });
     },
-  },
-  mounted() {
-    this.checkAnswerable();
   },
 };
 </script>
