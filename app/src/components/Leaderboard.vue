@@ -1,5 +1,5 @@
 <template>
-  <div class="leaderboard-main">
+  <div class="leaderboard-main" v-if="!loadingProblem">
     <h1 class="cl-title">Competition Leaderboard</h1>
     <div class="wrapper">
       <div class="loading" v-if="houseRankingLoading">
@@ -22,7 +22,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "Leaderboard",
   computed: {
-    ...mapGetters(["houseRankingLoading", "housesPoints"]),
+    ...mapGetters(["houseRankingLoading", "housesPoints", "loadingProblem"]),
   },
   components: { Chart },
 };

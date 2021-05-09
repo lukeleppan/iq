@@ -43,6 +43,7 @@ io.on("connection", (socket) => {
 
     socket.emit("show_message", formatMessage("Welcome to the Quiz!"));
     socket.emit("fetch_problem");
+    socket.emit("fetch_house_ranking");
   });
 
   socket.on("join_main", ({ username, name, room }) => {
@@ -101,11 +102,6 @@ io.on("connection", (socket) => {
     const user = userLeave(socket.id);
 
     if (user) {
-      io.to(user.room).emit(
-        "info_message",
-        formatMessage(`${user.name} stopped pondering.`)
-      );
-
       // Send users and room info
       io.to(user.room).emit("roomUsers", {
         room: user.room,
