@@ -130,7 +130,11 @@ export default {
             this.success = true;
             setLocalStorage(res);
             this.fetchJWT();
-            this.$router.push("/");
+            this.$socket.client.close();
+            this.$socket.client.open();
+            this.$router.go();
+            this.$router.go();
+            this.$router.go();
           } else if (res.data.user_error) {
             this.error = true;
             this.errorText = "Username or Password Incorrect";

@@ -93,6 +93,8 @@ export default {
     logout() {
       logout();
       this.$store.commit("logout");
+      this.$socket.client.close();
+      this.$socket.client.open();
       this.$router.go();
     },
   },

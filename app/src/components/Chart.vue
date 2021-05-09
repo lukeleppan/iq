@@ -6,16 +6,12 @@
 
 <script>
 import { Chart, registerables } from "chart.js";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Chart",
-  props: {
-    points: {
-      type: Array,
-    },
-    chartOptions: {
-      type: Object,
-    },
+  computed: {
+    ...mapGetters(["housesPoints"]),
   },
   mounted() {
     Chart.register(...registerables);
@@ -27,7 +23,7 @@ export default {
         datasets: [
           {
             label: "Points",
-            data: this.points,
+            data: this.housesPoints,
             backgroundColor: [
               "rgb(255, 50, 50)",
               "rgb(70, 70, 255)",
@@ -90,8 +86,6 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
-
 .chart-wrapper {
   display: flex;
   justify-content: center;

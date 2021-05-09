@@ -6,9 +6,9 @@
 
 <script>
 import moment from "moment";
+import { mapGetters } from "vuex";
 export default {
   name: "CountDown",
-  props: ["date"],
   data() {
     return {
       displayDays: 0,
@@ -21,6 +21,7 @@ export default {
     this.showRemaining();
   },
   computed: {
+    ...mapGetters(["openDate"]),
     seconds: () => 1000,
     minutes() {
       return this.seconds * 60;
@@ -32,7 +33,7 @@ export default {
       return this.hours * 24;
     },
     end() {
-      return new moment(this.date);
+      return new moment(this.openDate);
     },
   },
   methods: {

@@ -4,214 +4,245 @@
       <i class="fas fa-trophy fa-5x"></i>
     </div>
     <h1 class="header">Problem Leaderboard</h1>
-    <p class="no-users" v-if="hasUsers">
-      No one has solved this problem yet. Be the First!
-    </p>
-    <ul v-else>
-      <div v-if="users.length > 0">
+    <ul v-if="hasUsers">
+      <div v-if="leadingUsers.length > 0">
         <li>
           <div class="left-wrapper">
             <span class="number">1st</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[0].displayname }}</span>
-              <div class="dalberg" v-if="users[0].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[0].house == 2">Savory</div>
-              <div class="hurley" v-if="users[0].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[0].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[0].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[0].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[0].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[0].points }}</span>
+            <span class="points">{{ leadingUsers[0].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
-      <div v-if="users.length > 1">
+      <div v-if="leadingUsers.length > 1">
         <li>
           <div class="left-wrapper">
             <span class="number">2nd</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[1].displayname }}</span>
-              <div class="dalberg" v-if="users[1].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[1].house == 2">Savory</div>
-              <div class="hurley" v-if="users[1].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[1].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[1].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[1].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[1].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[1].points }}</span>
+            <span class="points">{{ leadingUsers[1].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
-      <div v-if="users.length > 2">
+      <div v-if="leadingUsers.length > 2">
         <li>
           <div class="left-wrapper">
             <span class="number">3rd</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[2].displayname }}</span>
-              <div class="dalberg" v-if="users[2].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[2].house == 2">Savory</div>
-              <div class="hurley" v-if="users[2].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[2].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[2].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[2].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[2].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[2].points }}</span>
+            <span class="points">{{ leadingUsers[2].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
-      <div v-if="users.length > 3">
+      <div v-if="leadingUsers.length > 3">
         <li>
           <div class="left-wrapper">
             <span class="number">4th</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[3].displayname }}</span>
-              <div class="dalberg" v-if="users[3].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[3].house == 2">Savory</div>
-              <div class="hurley" v-if="users[3].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[3].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[3].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[3].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[3].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[3].points }}</span>
+            <span class="points">{{ leadingUsers[3].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
-      <div v-if="users.length > 4">
+      <div v-if="leadingUsers.length > 4">
         <li>
           <div class="left-wrapper">
             <span class="number">5th</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[4].displayname }}</span>
-              <div class="dalberg" v-if="users[4].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[4].house == 2">Savory</div>
-              <div class="hurley" v-if="users[4].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[4].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[4].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[4].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[4].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[4].points }}</span>
+            <span class="points">{{ leadingUsers[4].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
-      <div v-if="users.length > 5">
+      <div v-if="leadingUsers.length > 5">
         <li>
           <div class="left-wrapper">
             <span class="number">6th</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[5].displayname }}</span>
-              <div class="dalberg" v-if="users[5].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[5].house == 2">Savory</div>
-              <div class="hurley" v-if="users[5].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[5].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[5].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[5].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[5].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[5].points }}</span>
+            <span class="points">{{ leadingUsers[5].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
-      <div v-if="users.length > 6">
+      <div v-if="leadingUsers.length > 6">
         <li>
           <div class="left-wrapper">
             <span class="number">7th</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[6].displayname }}</span>
-              <div class="dalberg" v-if="users[6].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[6].house == 2">Savory</div>
-              <div class="hurley" v-if="users[6].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[6].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[6].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[6].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[6].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[6].points }}</span>
+            <span class="points">{{ leadingUsers[6].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
-      <div v-if="users.length > 7">
+      <div v-if="leadingUsers.length > 7">
         <li>
           <div class="left-wrapper">
             <span class="number">8th</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[7].displayname }}</span>
-              <div class="dalberg" v-if="users[7].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[7].house == 2">Savory</div>
-              <div class="hurley" v-if="users[7].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[7].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[7].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[7].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[7].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[7].points }}</span>
+            <span class="points">{{ leadingUsers[7].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
-      <div v-if="users.length > 8">
+      <div v-if="leadingUsers.length > 8">
         <li>
           <div class="left-wrapper">
             <span class="number">9th</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[8].displayname }}</span>
-              <div class="dalberg" v-if="users[8].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[8].house == 2">Savory</div>
-              <div class="hurley" v-if="users[8].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[8].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[8].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[8].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[8].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[8].points }}</span>
+            <span class="points">{{ leadingUsers[8].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
-      <div v-if="users.length > 9">
+      <div v-if="leadingUsers.length > 9">
         <li>
           <div class="left-wrapper">
             <span class="number">10th</span>
             <div class="name-wrapper">
-              <span class="username-text">{{ users[9].displayname }}</span>
-              <div class="dalberg" v-if="users[9].house == 1">Dalberg</div>
-              <div class="savory" v-if="users[9].house == 2">Savory</div>
-              <div class="hurley" v-if="users[9].house == 3">Hurley</div>
+              <span class="username-text">{{
+                leadingUsers[9].displayname
+              }}</span>
+              <div class="dalberg" v-if="leadingUsers[9].house == 1">
+                Dalberg
+              </div>
+              <div class="savory" v-if="leadingUsers[9].house == 2">Savory</div>
+              <div class="hurley" v-if="leadingUsers[9].house == 3">Hurley</div>
             </div>
           </div>
           <div class="right-wrapper">
-            <span class="points">{{ users[9].points }}</span>
+            <span class="points">{{ leadingUsers[9].points }}</span>
             <span class="points-text">Points</span>
           </div>
         </li>
         <div class="break"></div>
       </div>
     </ul>
+    <p class="no-users" v-else>
+      No one has solved this problem yet. Be the First!
+    </p>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "LeaderUsers",
-  props: ["users"],
-  // data() {
-  //   return {
-  //     user
-  //   }
-  // }
   computed: {
-    hasUsers() {
-      return this.users.length === 0;
-    },
+    ...mapGetters(["leadingUsers", "hasUsers"]),
   },
 };
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
-
 #main {
   display: flex;
   flex-direction: column;

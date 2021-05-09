@@ -3,33 +3,69 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { useToast } from "vue-toastification";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
-  metaInfo: {
-    title: "iKhwezi Quiz",
-    htmlAttrs: {
-      lang: "en-US",
+  sockets: {
+    connect() {
+      if (this.jwt) {
+        this.$socket.client.emit("join_main", {
+          username: this.jwtData.sub,
+          name: this.jwtData.name,
+          room: "main",
+        });
+      } else {
+        this.$socket.client.emit("join_guest", {});
+      }
+      this.$socket.client.on("show_message", (payload) => {
+        const toast = useToast();
+        toast(payload.text);
+      });
+      this.$socket.client.on("info_message", (payload) => {
+        const toast = useToast();
+        toast.info(payload.text);
+      });
+      this.$socket.client.on("success_message", (payload) => {
+        const toast = useToast();
+        toast.success(payload.text);
+      });
+      this.$socket.client.on("error_message", (payload) => {
+        const toast = useToast();
+        toast.error(payload.text);
+      });
     },
-    meta: [
-      { charset: "utf-8" },
-      {
-        name: "description",
-        content: "The Interhouse iKhwezi Quiz!",
-      },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-    ],
+  },
+  computed: {
+    ...mapGetters(["jwt", "jwtData"]),
   },
   methods: {
     ...mapActions(["fetchJWT"]),
   },
-  mounted() {
+  created() {
     this.fetchJWT();
+    this.$socket.client.open();
   },
 };
 </script>
 
 <style>
+@font-face {
+  font-family: "Cabin";
+  font-weight: normal;
+  font-style: normal;
+  font-display: auto;
+  unicode-range: U+000-5FF;
+  src: local("Cabin"), url("/fonts/Cabin/Cabin-Bold.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-BoldItalic.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-Italic.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-Medium.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-MediumItalic.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-Regular.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-SemiBold.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-SemiBoldItalic.ttf") format("ttf");
+}
+
 * {
   box-sizing: border-box;
   margin: 0;

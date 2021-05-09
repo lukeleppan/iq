@@ -42,8 +42,6 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
-
 #main {
   display: flex;
   flex-direction: column;

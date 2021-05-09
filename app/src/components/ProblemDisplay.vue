@@ -1,54 +1,58 @@
 <template>
   <div id="main">
     <div class="top-problem">
-      <img class="image" :src="problem.image_url" alt="image" />
+      <img class="image" :src="problemImageUrl" alt="image" />
       <div class="info">
         <div class="title-author-wrapper">
           <h1 class="title">
-            <span>{{ problem.title }}</span>
-            <span v-if="easy" class="easy">Easy {{ problem.type }}</span>
+            <span>{{ problemTitle }}</span>
+            <span v-if="easy" class="easy">Easy {{ problemType }}</span>
             <span v-else-if="moderate" class="moderate"
-              >Moderate {{ problem.type }}
+              >Moderate {{ problemType }}
             </span>
-            <span v-else-if="hard" class="hard">Hard {{ problem.type }}</span>
+            <span v-else-if="hard" class="hard">Hard {{ problemType }}</span>
             <span v-else-if="extreme" class="extreme"
-              >Extreme {{ problem.type }}
+              >Extreme {{ problemType }}
             </span>
           </h1>
-          <h3 class="author">by {{ problem.author }}</h3>
+          <h3 class="author">by {{ problemAuthor }}</h3>
         </div>
-        <p class="description">{{ problem.description }}</p>
+        <p class="description">{{ problemDescription }}</p>
       </div>
     </div>
     <div class="answer-wrapper">
-      <Answer :points="points" @answered="answered" />
+      <Answer />
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import Answer from "./Answer.vue";
 export default {
   name: "ProblemDisplay",
-  props: ["problem", "points"],
-  emits: ["answered"],
   computed: {
+    ...mapGetters([
+      "problemID",
+      "problemTitle",
+      "problemDescription",
+      "problemType",
+      "problemDifficulty",
+      "problemImageUrl",
+      "problemAuthor",
+      "problemActiveDate",
+    ]),
     easy() {
-      return this.problem.difficulty === 0 ? true : false;
+      return this.problemDifficulty === 0 ? true : false;
     },
     moderate() {
-      return this.problem.difficulty === 1 ? true : false;
+      return this.problemDifficulty === 1 ? true : false;
     },
     hard() {
-      return this.problem.difficulty === 2 ? true : false;
+      return this.problemDifficulty === 2 ? true : false;
     },
     extreme() {
-      return this.problem.difficulty === 3 ? true : false;
-    },
-  },
-  methods: {
-    answered() {
-      this.$emit("answered");
+      return this.problemDifficulty === 3 ? true : false;
     },
   },
   components: { Answer },
@@ -56,8 +60,6 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
-
 #main {
   display: flex;
   flex-direction: column;
