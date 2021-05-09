@@ -11,8 +11,6 @@ export default {
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
-
 div {
   display: grid;
   place-items: center;

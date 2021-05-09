@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "Cabin";
+  font-weight: normal;
+  font-style: normal;
+  font-display: auto;
+  unicode-range: U+000-5FF;
+  src: local("Cabin"), url("/fonts/Cabin/Cabin-Bold.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-BoldItalic.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-Italic.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-Medium.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-MediumItalic.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-Regular.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-SemiBold.ttf") format("ttf"),
+    url("/fonts/Cabin/Cabin-SemiBoldItalic.ttf") format("ttf");
+}

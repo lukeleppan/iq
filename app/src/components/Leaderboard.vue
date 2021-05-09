@@ -2,14 +2,14 @@
   <div class="leaderboard-main">
     <h1 class="cl-title">Competition Leaderboard</h1>
     <div class="wrapper">
-      <div class="loading" v-if="loading">
+      <div class="loading" v-if="houseRankingLoading">
         <div class="lds-ripple">
           <div></div>
           <div></div>
         </div>
       </div>
-      <div v-else-if="points.length > 0">
-        <Chart class="chart" :points="points" :chartOptions="chartOptions" />
+      <div v-else-if="housesPoints.length > 0">
+        <Chart class="chart" />
       </div>
     </div>
   </div>
@@ -17,48 +17,18 @@
 
 <script>
 import Chart from "@/components/Chart";
-import axios from "axios";
+import { mapGetters } from "vuex";
+
 export default {
   name: "Leaderboard",
-  data() {
-    return {
-      loading: false,
-      points: [],
-      chartOptions: {
-        responsive: true,
-      },
-    };
+  computed: {
+    ...mapGetters(["houseRankingLoading", "housesPoints"]),
   },
   components: { Chart },
-  mounted() {
-    this.getHouseLeaderboard();
-  },
-  methods: {
-    getHouseLeaderboard() {
-      this.loading = true;
-      const { VUE_APP_API_URL } = process.env;
-      axios({
-        method: "get",
-        baseURL: VUE_APP_API_URL,
-        url: "/api/leaderboard/houses",
-      })
-        .then((res) => {
-          this.points = res.data.houses.map((house) => house.points);
-          this.loading = false;
-        })
-        .catch((error) => {
-          if (error) {
-            this.$router.replace("/");
-          }
-        });
-    },
-  },
 };
 </script>
 
 <style scoped>
-@import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
-
 .leaderboard-main {
   margin-top: 50px;
   margin-bottom: 100px;
