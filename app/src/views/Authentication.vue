@@ -85,7 +85,7 @@ export default {
     ...mapActions(["fetchJWT"]),
     resend() {
       const { VUE_APP_API_URL } = process.env;
-      if (this.verifyUsername === "") {
+      if (this.verifyUsername.trim() === "") {
         this.error = true;
         this.errorText = "Please Fill in Everything";
         return;
@@ -94,7 +94,7 @@ export default {
         method: "post",
         baseURL: VUE_APP_API_URL,
         url: "/api/users/resend",
-        data: { username: this.verifyUsername },
+        data: { username: this.verifyUsername.trim() },
       })
         .then((res) => {
           res;
@@ -109,7 +109,7 @@ export default {
       const { VUE_APP_API_URL } = process.env;
       this.error = false;
       this.errorText = "";
-      if (this.username === "") {
+      if (this.username.trim() === "") {
         this.error = true;
         this.errorText = "Please Fill in Everything";
         return;
@@ -123,7 +123,7 @@ export default {
         method: "post",
         baseURL: VUE_APP_API_URL,
         url: "/api/users/login",
-        data: { username: this.username, password: this.password },
+        data: { username: this.username.trim(), password: this.password },
       })
         .then((res) => {
           if (res.data.success) {
@@ -131,9 +131,6 @@ export default {
             setLocalStorage(res);
             this.fetchJWT();
             this.$socket.client.close();
-            this.$socket.client.open();
-            this.$router.go();
-            this.$router.go();
             this.$router.go();
           } else if (res.data.user_error) {
             this.error = true;
