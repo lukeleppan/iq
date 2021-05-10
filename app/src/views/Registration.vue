@@ -56,6 +56,13 @@
               id="password"
               name="password"
             />
+            <label for="password">Confirm Password</label>
+            <input
+              v-model="confirmPassword"
+              type="password"
+              id="password"
+              name="password"
+            />
             <input type="submit" value="Register" class="btn register-btn" />
             <div>
               <p id="error" v-if="error">{{ errorText }}</p>
@@ -97,6 +104,7 @@ export default {
       house: 0,
       username: "",
       password: "",
+      confirmPassword: "",
 
       success: false,
       error: false,
@@ -131,6 +139,12 @@ export default {
       if (this.password === "") {
         this.error = true;
         this.errorText = "Please Enter a Password";
+        return;
+      }
+
+      if (this.password !== this.confirmPassword) {
+        this.error = true;
+        this.errorText = "Password Mismatch";
         return;
       }
 
