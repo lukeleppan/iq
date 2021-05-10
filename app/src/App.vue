@@ -46,6 +46,9 @@ export default {
     this.fetchJWT();
     this.$socket.client.open();
   },
+  unmounted() {
+    this.$socket.client.close();
+  },
 };
 </script>
 
