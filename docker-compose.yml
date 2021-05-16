@@ -19,6 +19,8 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    links:
+      - "node:nodejs"
     depends_on:
       - app
       - node
@@ -38,6 +40,8 @@ services:
     build: ./server
     ports:
       - 5000:5000
+    depends_on:
+      - db
 
   app:
     build: ./app
