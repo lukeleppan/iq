@@ -3,3 +3,4 @@
 ./server/.env
 node_modules
 dbdata
+data/certbot
