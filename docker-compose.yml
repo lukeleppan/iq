@@ -21,7 +21,7 @@ services:
       - "443:443"
     depends_on:
       - app
-      - node
+      - server
       - db
       - certbot
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
@@ -46,4 +46,4 @@ services:
     ports:
       - 8080:8080
     depends_on:
-      - node
+      - server
